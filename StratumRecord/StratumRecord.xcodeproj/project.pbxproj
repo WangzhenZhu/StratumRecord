@@ -1,0 +1,467 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1AEB171BE518B3C5F3376990 /* SRDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E46D453CA47B4A4FDC8A96 /* SRDataManager.m */; };
+		1BE22DC6DCBFFFA79283FC2A /* SRPlazaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5382BF438BFC9EF2D0400E19 /* SRPlazaCell.m */; };
+		1FAD9EDE92BB7CE585909749 /* SREditStrategyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D7E0B6589F3B5E53F35F543 /* SREditStrategyViewController.m */; };
+		27C8DE6D653F62412813E1FB /* SRRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0EC52BD3D31CEB4D3910EEA /* SRRecordViewController.m */; };
+		35F7E0307F5780A531AE8304 /* SRStrategyDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0223BCEAFA92A224E2BCC929 /* SRStrategyDetailViewController.m */; };
+		5D46B8EFE45334518FF7C963 /* libPods-StratumRecord.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D921DC295D0A82E6E871E758 /* libPods-StratumRecord.a */; };
+		618BE970E22B0B7C653B94B3 /* SRSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8436008897285373AC19ECF6 /* SRSettingsViewController.m */; };
+		728EC68849C7E93EA228D06D /* SRTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B77C78182A1D0E24CE0AF68D /* SRTabBarController.m */; };
+		72AF8D9FF67A2345CE41CE21 /* SRPlazaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAECC9A1D54221A0D10FE8AD /* SRPlazaViewController.m */; };
+		830543E38C1A8AE4C95D377D /* SRComment.m in Sources */ = {isa = PBXBuildFile; fileRef = B876F9D27378FC0A29296563 /* SRComment.m */; };
+		CCFB3E219776F6DEA3B94F58 /* SRStrategyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FB873CDB9C6EC8A76D22922A /* SRStrategyCell.m */; };
+		DD835DCF6057A8FF2697D150 /* SRConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DE11CCEC875E3835FD2860 /* SRConstants.m */; };
+		FA4B694E61DB45EBC1320603 /* SRStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 827B1BDF55FF578EC0AA2DA5 /* SRStrategy.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0223BCEAFA92A224E2BCC929 /* SRStrategyDetailViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRStrategyDetailViewController.m; path = StratumRecord/SRStrategyDetailViewController.m; sourceTree = "<group>"; };
+		026AE3FE333CCA9BCAD4CC0F /* SRPlazaCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRPlazaCell.h; path = StratumRecord/SRPlazaCell.h; sourceTree = "<group>"; };
+		04C97FB22F4DE04900560F9E /* StratumRecord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StratumRecord.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CF0C66A85E1D69271C76661 /* SRTabBarController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRTabBarController.h; path = StratumRecord/SRTabBarController.h; sourceTree = "<group>"; };
+		2D61084F5E1C402BC9D35B05 /* SRSettingsViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRSettingsViewController.h; path = StratumRecord/SRSettingsViewController.h; sourceTree = "<group>"; };
+		38C042F6AEADA02B2D603B1E /* SRStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRStrategy.h; path = StratumRecord/SRStrategy.h; sourceTree = "<group>"; };
+		3AAE6F273364E8C63BE1C784 /* SRRecordViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRRecordViewController.h; path = StratumRecord/SRRecordViewController.h; sourceTree = "<group>"; };
+		43EB8482415D9A5C91AA4A9A /* SREditStrategyViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SREditStrategyViewController.h; path = StratumRecord/SREditStrategyViewController.h; sourceTree = "<group>"; };
+		480E11642CA62765676A984E /* SRConstants.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRConstants.h; path = StratumRecord/SRConstants.h; sourceTree = "<group>"; };
+		5382BF438BFC9EF2D0400E19 /* SRPlazaCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRPlazaCell.m; path = StratumRecord/SRPlazaCell.m; sourceTree = "<group>"; };
+		701994FA67EE2849FE2FD63B /* SRComment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRComment.h; path = StratumRecord/SRComment.h; sourceTree = "<group>"; };
+		827B1BDF55FF578EC0AA2DA5 /* SRStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRStrategy.m; path = StratumRecord/SRStrategy.m; sourceTree = "<group>"; };
+		82DE11CCEC875E3835FD2860 /* SRConstants.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRConstants.m; path = StratumRecord/SRConstants.m; sourceTree = "<group>"; };
+		8436008897285373AC19ECF6 /* SRSettingsViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRSettingsViewController.m; path = StratumRecord/SRSettingsViewController.m; sourceTree = "<group>"; };
+		8B16221692F4FBDE1D083B51 /* SRPlazaViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRPlazaViewController.h; path = StratumRecord/SRPlazaViewController.h; sourceTree = "<group>"; };
+		8D7E0B6589F3B5E53F35F543 /* SREditStrategyViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SREditStrategyViewController.m; path = StratumRecord/SREditStrategyViewController.m; sourceTree = "<group>"; };
+		A1A88C1B9989B60CDB66918F /* Pods-StratumRecord.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StratumRecord.debug.xcconfig"; path = "Target Support Files/Pods-StratumRecord/Pods-StratumRecord.debug.xcconfig"; sourceTree = "<group>"; };
+		AAECC9A1D54221A0D10FE8AD /* SRPlazaViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRPlazaViewController.m; path = StratumRecord/SRPlazaViewController.m; sourceTree = "<group>"; };
+		ABA9C8C0F972DE12FF8D74F1 /* SRStrategyCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRStrategyCell.h; path = StratumRecord/SRStrategyCell.h; sourceTree = "<group>"; };
+		B77C78182A1D0E24CE0AF68D /* SRTabBarController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRTabBarController.m; path = StratumRecord/SRTabBarController.m; sourceTree = "<group>"; };
+		B876F9D27378FC0A29296563 /* SRComment.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRComment.m; path = StratumRecord/SRComment.m; sourceTree = "<group>"; };
+		D921DC295D0A82E6E871E758 /* libPods-StratumRecord.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StratumRecord.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEA112453DA26785953F976C /* Pods-StratumRecord.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StratumRecord.release.xcconfig"; path = "Target Support Files/Pods-StratumRecord/Pods-StratumRecord.release.xcconfig"; sourceTree = "<group>"; };
+		E05D6E4DE0BA28A1FE417CA4 /* SRDataManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRDataManager.h; path = StratumRecord/SRDataManager.h; sourceTree = "<group>"; };
+		E0EC52BD3D31CEB4D3910EEA /* SRRecordViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRRecordViewController.m; path = StratumRecord/SRRecordViewController.m; sourceTree = "<group>"; };
+		E5E46D453CA47B4A4FDC8A96 /* SRDataManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRDataManager.m; path = StratumRecord/SRDataManager.m; sourceTree = "<group>"; };
+		E94046FD63C9C6C131EF5FDA /* SRStrategyDetailViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRStrategyDetailViewController.h; path = StratumRecord/SRStrategyDetailViewController.h; sourceTree = "<group>"; };
+		FB873CDB9C6EC8A76D22922A /* SRStrategyCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRStrategyCell.m; path = StratumRecord/SRStrategyCell.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		04C97FC92F4DE04A00560F9E /* Exceptions for "StratumRecord" folder in "StratumRecord" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 04C97FB12F4DE04900560F9E /* StratumRecord */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		04C97FB42F4DE04900560F9E /* StratumRecord */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				04C97FC92F4DE04A00560F9E /* Exceptions for "StratumRecord" folder in "StratumRecord" target */,
+			);
+			path = StratumRecord;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		04C97FAF2F4DE04800560F9E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D46B8EFE45334518FF7C963 /* libPods-StratumRecord.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		04C97FA92F4DE04800560F9E = {
+			isa = PBXGroup;
+			children = (
+				04C97FB42F4DE04900560F9E /* StratumRecord */,
+				04C97FB32F4DE04900560F9E /* Products */,
+				513A91779CD6735E8F97FB5C /* Pods */,
+				2CC4CCD3AE3C3D717CF33591 /* Frameworks */,
+				9CC66914477BB5D69BA83E83 /* StratumRecord */,
+			);
+			sourceTree = "<group>";
+		};
+		04C97FB32F4DE04900560F9E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				04C97FB22F4DE04900560F9E /* StratumRecord.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2CC4CCD3AE3C3D717CF33591 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D921DC295D0A82E6E871E758 /* libPods-StratumRecord.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		513A91779CD6735E8F97FB5C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A1A88C1B9989B60CDB66918F /* Pods-StratumRecord.debug.xcconfig */,
+				DEA112453DA26785953F976C /* Pods-StratumRecord.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		9CC66914477BB5D69BA83E83 /* StratumRecord */ = {
+			isa = PBXGroup;
+			children = (
+				38C042F6AEADA02B2D603B1E /* SRStrategy.h */,
+				827B1BDF55FF578EC0AA2DA5 /* SRStrategy.m */,
+				701994FA67EE2849FE2FD63B /* SRComment.h */,
+				B876F9D27378FC0A29296563 /* SRComment.m */,
+				480E11642CA62765676A984E /* SRConstants.h */,
+				82DE11CCEC875E3835FD2860 /* SRConstants.m */,
+				E05D6E4DE0BA28A1FE417CA4 /* SRDataManager.h */,
+				E5E46D453CA47B4A4FDC8A96 /* SRDataManager.m */,
+				2CF0C66A85E1D69271C76661 /* SRTabBarController.h */,
+				B77C78182A1D0E24CE0AF68D /* SRTabBarController.m */,
+				3AAE6F273364E8C63BE1C784 /* SRRecordViewController.h */,
+				E0EC52BD3D31CEB4D3910EEA /* SRRecordViewController.m */,
+				8B16221692F4FBDE1D083B51 /* SRPlazaViewController.h */,
+				AAECC9A1D54221A0D10FE8AD /* SRPlazaViewController.m */,
+				2D61084F5E1C402BC9D35B05 /* SRSettingsViewController.h */,
+				8436008897285373AC19ECF6 /* SRSettingsViewController.m */,
+				ABA9C8C0F972DE12FF8D74F1 /* SRStrategyCell.h */,
+				FB873CDB9C6EC8A76D22922A /* SRStrategyCell.m */,
+				026AE3FE333CCA9BCAD4CC0F /* SRPlazaCell.h */,
+				5382BF438BFC9EF2D0400E19 /* SRPlazaCell.m */,
+				43EB8482415D9A5C91AA4A9A /* SREditStrategyViewController.h */,
+				8D7E0B6589F3B5E53F35F543 /* SREditStrategyViewController.m */,
+				E94046FD63C9C6C131EF5FDA /* SRStrategyDetailViewController.h */,
+				0223BCEAFA92A224E2BCC929 /* SRStrategyDetailViewController.m */,
+			);
+			name = StratumRecord;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		04C97FB12F4DE04900560F9E /* StratumRecord */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04C97FCA2F4DE04A00560F9E /* Build configuration list for PBXNativeTarget "StratumRecord" */;
+			buildPhases = (
+				9E8519B03E8E503F230A6DB5 /* [CP] Check Pods Manifest.lock */,
+				04C97FAE2F4DE04800560F9E /* Sources */,
+				04C97FAF2F4DE04800560F9E /* Frameworks */,
+				04C97FB02F4DE04900560F9E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				04C97FB42F4DE04900560F9E /* StratumRecord */,
+			);
+			name = StratumRecord;
+			productName = StratumRecord;
+			productReference = 04C97FB22F4DE04900560F9E /* StratumRecord.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		04C97FAA2F4DE04800560F9E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 2630;
+				TargetAttributes = {
+					04C97FB12F4DE04900560F9E = {
+						CreatedOnToolsVersion = 26.3;
+					};
+				};
+			};
+			buildConfigurationList = 04C97FAD2F4DE04800560F9E /* Build configuration list for PBXProject "StratumRecord" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 04C97FA92F4DE04800560F9E;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 04C97FB32F4DE04900560F9E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				04C97FB12F4DE04900560F9E /* StratumRecord */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		04C97FB02F4DE04900560F9E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9E8519B03E8E503F230A6DB5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-StratumRecord-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		04C97FAE2F4DE04800560F9E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA4B694E61DB45EBC1320603 /* SRStrategy.m in Sources */,
+				830543E38C1A8AE4C95D377D /* SRComment.m in Sources */,
+				DD835DCF6057A8FF2697D150 /* SRConstants.m in Sources */,
+				1AEB171BE518B3C5F3376990 /* SRDataManager.m in Sources */,
+				728EC68849C7E93EA228D06D /* SRTabBarController.m in Sources */,
+				27C8DE6D653F62412813E1FB /* SRRecordViewController.m in Sources */,
+				72AF8D9FF67A2345CE41CE21 /* SRPlazaViewController.m in Sources */,
+				618BE970E22B0B7C653B94B3 /* SRSettingsViewController.m in Sources */,
+				CCFB3E219776F6DEA3B94F58 /* SRStrategyCell.m in Sources */,
+				1BE22DC6DCBFFFA79283FC2A /* SRPlazaCell.m in Sources */,
+				1FAD9EDE92BB7CE585909749 /* SREditStrategyViewController.m in Sources */,
+				35F7E0307F5780A531AE8304 /* SRStrategyDetailViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		04C97FCB2F4DE04A00560F9E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1A88C1B9989B60CDB66918F /* Pods-StratumRecord.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StratumRecord/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stratum.record.StratumRecord;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		04C97FCC2F4DE04A00560F9E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DEA112453DA26785953F976C /* Pods-StratumRecord.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StratumRecord/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stratum.record.StratumRecord;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		04C97FCD2F4DE04A00560F9E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		04C97FCE2F4DE04A00560F9E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04C97FAD2F4DE04800560F9E /* Build configuration list for PBXProject "StratumRecord" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04C97FCD2F4DE04A00560F9E /* Debug */,
+				04C97FCE2F4DE04A00560F9E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04C97FCA2F4DE04A00560F9E /* Build configuration list for PBXNativeTarget "StratumRecord" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04C97FCB2F4DE04A00560F9E /* Debug */,
+				04C97FCC2F4DE04A00560F9E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 04C97FAA2F4DE04800560F9E /* Project object */;
+}

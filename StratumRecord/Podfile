@@ -1,0 +1,15 @@
+# Uncomment the next line to define a global platform for your project
+platform :ios, '12.0'
+
+target 'StratumRecord' do
+  # Comment the next line if you don't want to use dynamic frameworks
+   pod 'Masonry', '~> 1.1.0'
+   pod 'AFNetworking', '~> 4.0'
+  # Pods for StratumRecord
+  
+  # Example pods (uncomment to use):
+  # pod 'Alamofire', '~> 5.8'
+  # pod 'SDWebImage', '~> 5.18'
+  # pod 'SnapKit', '~> 5.7'
+
+end
