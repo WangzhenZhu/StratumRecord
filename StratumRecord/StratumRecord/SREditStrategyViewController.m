@@ -54,6 +54,14 @@
     self.view.backgroundColor = SR_COLOR_BACKGROUND;
     self.games = SR_PREDEFINED_GAMES;
     
+    // 设置背景图片
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main"]];
+    backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+    backgroundImageView.frame = self.view.bounds;
+    backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:backgroundImageView];
+    [self.view sendSubviewToBack:backgroundImageView];
+    
     [self setupNavigationBar];
     [self setupUI];
     [self prefillData];

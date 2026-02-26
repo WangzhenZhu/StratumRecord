@@ -17,6 +17,12 @@
 @property (nonatomic, strong) UILabel *appNameLabel;
 @property (nonatomic, strong) UILabel *appTaglineLabel;
 
+// User info
+@property (nonatomic, strong) UIView *userInfoView;
+@property (nonatomic, strong) UIView *avatarView;
+@property (nonatomic, strong) UILabel *usernameLabel;
+@property (nonatomic, strong) UILabel *userDescLabel;
+
 @property (nonatomic, strong) NSArray<NSDictionary *> *settingsItems;
 
 @end
@@ -28,6 +34,14 @@
     
     self.title = @"Settings";
     self.view.backgroundColor = SR_COLOR_BACKGROUND;
+    
+    // 设置背景图片
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main"]];
+    backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+    backgroundImageView.frame = self.view.bounds;
+    backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:backgroundImageView];
+    [self.view sendSubviewToBack:backgroundImageView];
     
     [self setupData];
     [self setupUI];
@@ -55,6 +69,38 @@
     self.headerView.backgroundColor = SR_COLOR_PRIMARY;
     [self.view addSubview:self.headerView];
     
+    // User Info Card
+    self.userInfoView = [[UIView alloc] init];
+    self.userInfoView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2];
+    self.userInfoView.layer.cornerRadius = 12;
+    [self.headerView addSubview:self.userInfoView];
+    
+    // Avatar
+    self.avatarView = [[UIView alloc] init];
+    self.avatarView.backgroundColor = [UIColor whiteColor];
+    self.avatarView.layer.cornerRadius = 30;
+    [self.userInfoView addSubview:self.avatarView];
+    
+    UILabel *avatarLabel = [[UILabel alloc] init];
+    avatarLabel.text = @"👤";
+    avatarLabel.font = [UIFont systemFontOfSize:32];
+    avatarLabel.textAlignment = NSTextAlignmentCenter;
+    [self.avatarView addSubview:avatarLabel];
+    
+    // Username
+    self.usernameLabel = [[UILabel alloc] init];
+    self.usernameLabel.text = @"Game Strategist";
+    self.usernameLabel.font = [UIFont boldSystemFontOfSize:20];
+    self.usernameLabel.textColor = [UIColor whiteColor];
+    [self.userInfoView addSubview:self.usernameLabel];
+    
+    // User description
+    self.userDescLabel = [[UILabel alloc] init];
+    self.userDescLabel.text = @"Record and share your strategies";
+    self.userDescLabel.font = [UIFont systemFontOfSize:14];
+    self.userDescLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+    [self.userInfoView addSubview:self.userDescLabel];
+    
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.text = @"Settings";
     self.titleLabel.font = [UIFont boldSystemFontOfSize:32];
@@ -71,14 +117,43 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = SR_COLOR_BACKGROUND;
+    self.tableView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 60, 0, 0);
     [self.view addSubview:self.tableView];
     
     // Layout
     [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self.view);
-        make.height.mas_equalTo(180);
+        make.height.mas_equalTo(260);
+    }];
+    
+    [self.userInfoView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.headerView).offset(20);
+        make.right.equalTo(self.headerView).offset(-20);
+        make.top.equalTo(self.headerView).offset(60);
+        make.height.mas_equalTo(100);
+    }];
+    
+    [self.avatarView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.userInfoView).offset(16);
+        make.centerY.equalTo(self.userInfoView);
+        make.width.height.mas_equalTo(60);
+    }];
+    
+    [avatarLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.avatarView);
+    }];
+    
+    [self.usernameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.avatarView.mas_right).offset(16);
+        make.right.equalTo(self.userInfoView).offset(-16);
+        make.top.equalTo(self.avatarView).offset(8);
+    }];
+    
+    [self.userDescLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.usernameLabel);
+        make.right.equalTo(self.userInfoView).offset(-16);
+        make.top.equalTo(self.usernameLabel.mas_bottom).offset(6);
     }];
     
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -115,6 +190,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
+        cell.backgroundColor = [UIColor whiteColor];
     }
     
     NSDictionary *item = self.settingsItems[indexPath.row];

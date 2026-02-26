@@ -32,6 +32,14 @@
     self.view.backgroundColor = SR_COLOR_BACKGROUND;
     self.strategies = [NSMutableArray array];
     
+    // 设置背景图片
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main"]];
+    backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+    backgroundImageView.frame = self.view.bounds;
+    backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:backgroundImageView];
+    [self.view sendSubviewToBack:backgroundImageView];
+    
     [self setupUI];
     [self loadData];
 }
@@ -64,7 +72,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = SR_COLOR_BACKGROUND;
+    self.tableView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.contentInset = UIEdgeInsetsMake(16, 0, 80, 0);
     [self.tableView registerClass:[SRPlazaCell class] forCellReuseIdentifier:@"PlazaCell"];
