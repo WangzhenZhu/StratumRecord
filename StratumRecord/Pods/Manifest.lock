@@ -14,21 +14,27 @@ PODS:
   - AFNetworking/Serialization (4.0.1)
   - AFNetworking/UIKit (4.0.1):
     - AFNetworking/NSURLSession
+  - LEEAlert (1.8.0):
+    - LEEAlert/Privacy (= 1.8.0)
+  - LEEAlert/Privacy (1.8.0)
   - Masonry (1.1.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 4.0)
+  - LEEAlert
   - Masonry (~> 1.1.0)
 
 SPEC REPOS:
   trunk:
     - AFNetworking
+    - LEEAlert
     - Masonry
 
 SPEC CHECKSUMS:
   AFNetworking: 3bd23d814e976cd148d7d44c3ab78017b744cd58
+  LEEAlert: 20b46f143287d749ec3e718059e064c175932807
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
 
-PODFILE CHECKSUM: e355f6a89da5591ab70d26958a0bfa7612a744a7
+PODFILE CHECKSUM: a0ccd65e382e1766b151974025b9012e598f8e3b
 
 COCOAPODS: 1.16.2

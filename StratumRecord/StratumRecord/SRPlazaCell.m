@@ -10,12 +10,13 @@
 @interface SRPlazaCell ()
 
 @property (nonatomic, strong) UIView *cardView;
-@property (nonatomic, strong) UIView *avatarView;
+@property (nonatomic, strong) UIImageView *avatarView;
 @property (nonatomic, strong) UILabel *authorLabel;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UIButton *moreButton;
 
 @property (nonatomic, strong) UIView *gameTagView;
+@property (nonatomic, strong) UIImageView *gameIconImageView;
 @property (nonatomic, strong) UILabel *gameLabel;
 @property (nonatomic, strong) UILabel *importanceLabel;
 
@@ -57,8 +58,7 @@
     [self.contentView addSubview:self.cardView];
     
     // Avatar
-    self.avatarView = [[UIView alloc] init];
-    self.avatarView.backgroundColor = SR_COLOR_PRIMARY;
+    self.avatarView = [[UIImageView alloc] init];
     self.avatarView.layer.cornerRadius = 20;
     [self.cardView addSubview:self.avatarView];
     
@@ -86,6 +86,12 @@
     self.gameTagView = [[UIView alloc] init];
     self.gameTagView.layer.cornerRadius = 4;
     [self.cardView addSubview:self.gameTagView];
+    
+    // Game icon
+    self.gameIconImageView = [[UIImageView alloc] init];
+    self.gameIconImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.gameIconImageView.clipsToBounds = YES;
+    [self.gameTagView addSubview:self.gameIconImageView];
     
     self.gameLabel = [[UILabel alloc] init];
     self.gameLabel.font = [UIFont boldSystemFontOfSize:11];
@@ -116,18 +122,22 @@
     [self.cardView addSubview:self.contentLabel];
     
     // Action buttons
-    self.likeButton = [self createActionButton];
-    [self.likeButton addTarget:self action:@selector(likeTapped) forControlEvents:UIControlEventTouchUpInside];
-    [self.cardView addSubview:self.likeButton];
-    
-    self.commentButton = [self createActionButton];
-    [self.commentButton addTarget:self action:@selector(commentTapped) forControlEvents:UIControlEventTouchUpInside];
-    [self.cardView addSubview:self.commentButton];
-    
-    self.shareButton = [self createActionButton];
-    [self.shareButton addTarget:self action:@selector(shareTapped) forControlEvents:UIControlEventTouchUpInside];
+        self.likeButton = [self createActionButton];
+        [self.likeButton addTarget:self action:@selector(likeTapped) forControlEvents:UIControlEventTouchUpInside];
+        [self.likeButton setImage:[UIImage imageNamed:@"like_s_icon"] forState:UIControlStateNormal];
+        self.likeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [self.cardView addSubview:self.likeButton];
+
+        self.commentButton = [self createActionButton];
+        [self.commentButton addTarget:self action:@selector(commentTapped) forControlEvents:UIControlEventTouchUpInside];
+        [self.commentButton setImage:[UIImage imageNamed:@"comment_icon"] forState:UIControlStateNormal];
+        self.commentButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [self.cardView addSubview:self.commentButton];
+
+        self.shareButton = [self createActionButton];
+        [self.shareButton addTarget:self action:@selector(shareTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.shareButton setImage:[UIImage systemImageNamed:@"square.and.arrow.down"] forState:UIControlStateNormal];
     [self.cardView addSubview:self.shareButton];
-    
     // Layout
     [self.cardView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.contentView).offset(16);
@@ -164,8 +174,14 @@
         make.height.mas_equalTo(22);
     }];
     
+    [self.gameIconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.gameTagView).offset(6);
+        make.centerY.equalTo(self.gameTagView);
+        make.width.height.mas_equalTo(20);
+    }];
+    
     [self.gameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.gameTagView).offset(8);
+        make.left.equalTo(self.gameIconImageView.mas_right).offset(5);
         make.right.equalTo(self.gameTagView).offset(-8);
         make.centerY.equalTo(self.gameTagView);
     }];
@@ -191,7 +207,6 @@
         make.left.equalTo(self.cardView).offset(16);
         make.top.equalTo(self.contentLabel.mas_bottom).offset(16);
         make.bottom.equalTo(self.cardView).offset(-16);
-        make.height.mas_equalTo(24);
     }];
     
     [self.commentButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -210,14 +225,16 @@
     button.titleLabel.font = [UIFont systemFontOfSize:14];
     button.tintColor = SR_COLOR_TEXT_SECONDARY;
     [button setTitleColor:SR_COLOR_TEXT_SECONDARY forState:UIControlStateNormal];
+    button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    button.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 10);
     return button;
 }
 
-- (void)configureWithStrategy:(SRStrategy *)strategy
-                  likeHandler:(void(^)(void))likeHandler
-               commentHandler:(void(^)(void))commentHandler
-                 shareHandler:(void(^)(void))shareHandler
-                  moreHandler:(void(^)(void))moreHandler {
+- (void)srm_configureWithStrategy:(SRStrategy *)strategy
+                      likeHandler:(void(^)(void))likeHandler
+                   commentHandler:(void(^)(void))commentHandler
+                     shareHandler:(void(^)(void))shareHandler
+                      moreHandler:(void(^)(void))moreHandler {
     
     self.likeHandler = likeHandler;
     self.commentHandler = commentHandler;
@@ -225,6 +242,7 @@
     self.moreHandler = moreHandler;
     
     // Author info
+    self.avatarView.image = [UIImage imageNamed:strategy.authorAvatar];
     self.authorLabel.text = strategy.authorName;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"M/d/yyyy";
@@ -233,6 +251,9 @@
     // Game and importance
     UIColor *color = [SRConstants colorForImportance:strategy.importance];
     self.gameTagView.backgroundColor = color;
+    
+    NSString *iconName = strategy.gameIcon.length > 0 ? strategy.gameIcon : [SRConstants iconForGameName:strategy.gameName];
+    self.gameIconImageView.image = [UIImage imageNamed:iconName];
     self.gameLabel.text = strategy.gameName;
     
     self.importanceLabel.text = [SRConstants textForImportance:strategy.importance];
@@ -245,14 +266,19 @@
     self.contentLabel.text = strategy.content;
     
     // Actions
-    NSString *likeIcon = strategy.isLiked ? @"❤️" : @"♡";
-    NSString *likeTitle = [NSString stringWithFormat:@"%@ %ld", likeIcon, (long)strategy.likeCount];
-    [self.likeButton setTitle:likeTitle forState:UIControlStateNormal];
-    
-    NSString *commentTitle = [NSString stringWithFormat:@"💬 %ld", (long)strategy.commentCount];
-    [self.commentButton setTitle:commentTitle forState:UIControlStateNormal];
-    
-    [self.shareButton setTitle:@"↗" forState:UIControlStateNormal];
+    NSString *likeIconName = strategy.isLiked ? @"like_icon" : @"like_s_icon";
+    [self.likeButton setImage:[UIImage imageNamed:likeIconName] forState:UIControlStateNormal];
+    [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", (long)strategy.likeCount] forState:UIControlStateNormal];
+    self.likeButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 8);
+    self.likeButton.titleEdgeInsets = UIEdgeInsetsMake(0, 8, 0, -8);
+
+    [self.commentButton setImage:[UIImage imageNamed:@"comment_icon"] forState:UIControlStateNormal];
+    [self.commentButton setTitle:[NSString stringWithFormat:@"%ld", (long)strategy.commentCount] forState:UIControlStateNormal];
+    self.commentButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 8);
+    self.commentButton.titleEdgeInsets = UIEdgeInsetsMake(0, 8, 0, -8);
+
+    [self.shareButton setImage:[UIImage systemImageNamed:@"square.and.arrow.down"] forState:UIControlStateNormal];
+    [self.shareButton setTitle:@"" forState:UIControlStateNormal];
 }
 
 - (void)likeTapped {

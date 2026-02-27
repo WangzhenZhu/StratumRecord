@@ -19,6 +19,9 @@
 // Predefined games
 #define SR_PREDEFINED_GAMES @[@"League of Legends", @"Valorant", @"Dota 2", @"Counter-Strike 2", @"Apex Legends", @"Overwatch 2", @"Fortnite", @"Rocket League"]
 
+// Game icon image names
+#define SR_GAME_ICONS @{@"League of Legends": @"game_icon1.jpeg", @"Valorant": @"game_icon2.jpg", @"Dota 2": @"game_icon3.jpg", @"Counter-Strike 2": @"game_icon4.jpg", @"Apex Legends": @"game_icon5.jpg", @"Overwatch 2": @"game_icon6.jpg", @"Fortnite": @"game_icon7", @"Rocket League": @"game_icon8.jpg"}
+
 // Storage keys
 #define SR_KEY_MY_STRATEGIES @"SR_KEY_MY_STRATEGIES"
 #define SR_KEY_PLAZA_STRATEGIES @"SR_KEY_PLAZA_STRATEGIES"
@@ -29,5 +32,7 @@
 + (UIColor *)colorForImportance:(NSInteger)importance;
 + (NSString *)textForImportance:(NSInteger)importance;
 + (UIColor *)borderColorForImportance:(NSInteger)importance;
++ (NSString *)iconForGameName:(NSString *)gameName;
++ (NSArray<NSString *> *)availableGameIcons;
 
 @end

@@ -10,6 +10,6 @@
 
 @interface SRStrategyCell : UITableViewCell
 
-- (void)configureWithStrategy:(SRStrategy *)strategy;
+- (void)srm_configureWithStrategy:(SRStrategy *)strategy;
 
 @end

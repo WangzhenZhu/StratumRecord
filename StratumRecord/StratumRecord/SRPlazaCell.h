@@ -10,10 +10,10 @@
 
 @interface SRPlazaCell : UITableViewCell
 
-- (void)configureWithStrategy:(SRStrategy *)strategy
-                  likeHandler:(void(^)(void))likeHandler
-               commentHandler:(void(^)(void))commentHandler
-                 shareHandler:(void(^)(void))shareHandler
-                  moreHandler:(void(^)(void))moreHandler;
+- (void)srm_configureWithStrategy:(SRStrategy *)strategy
+                      likeHandler:(void(^)(void))likeHandler
+                   commentHandler:(void(^)(void))commentHandler
+                     shareHandler:(void(^)(void))shareHandler
+                      moreHandler:(void(^)(void))moreHandler;
 
 @end

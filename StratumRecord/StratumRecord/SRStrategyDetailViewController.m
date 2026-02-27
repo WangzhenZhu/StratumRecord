@@ -58,9 +58,12 @@
     [self.view addSubview:backgroundImageView];
     [self.view sendSubviewToBack:backgroundImageView];
     
-    [self setupNavigationBar];
-    [self setupUI];
-    [self loadComments];
+    UIView *coverView = [[UIView alloc] init];
+    coverView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
+    [self.view addSubview:coverView];
+    [self srm_setupNavigationBar];
+    [self srm_setupUI];
+    [self srm_loadComments];
     
     // Keyboard notifications
     [[NSNotificationCenter defaultCenter] addObserver:self 
@@ -82,15 +85,15 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)setupNavigationBar {
-    UIBarButtonItem *moreButton = [[UIBarButtonItem alloc] initWithImage:[self imageWithSystemName:@"ellipsis"]
+- (void)srm_setupNavigationBar {
+    UIBarButtonItem *moreButton = [[UIBarButtonItem alloc] initWithImage:[self srm_imageWithSystemName:@"ellipsis"]
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self
-                                                                  action:@selector(moreTapped)];
+                                                                  action:@selector(srm_moreTapped)];
     self.navigationItem.rightBarButtonItem = moreButton;
 }
 
-- (void)setupUI {
+- (void)srm_setupUI {
     self.scrollView = [[UIScrollView alloc] init];
     [self.view addSubview:self.scrollView];
     
@@ -206,12 +209,13 @@
     [self.sendButton setTitle:@"Send" forState:UIControlStateNormal];
     self.sendButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
     self.sendButton.tintColor = SR_COLOR_PRIMARY;
-    [self.sendButton addTarget:self action:@selector(sendComment) forControlEvents:UIControlEventTouchUpInside];
+    [self.sendButton addTarget:self action:@selector(srm_sendComment) forControlEvents:UIControlEventTouchUpInside];
     [self.commentInputContainer addSubview:self.sendButton];
     
     // Layout
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self.view);
+        make.top.equalTo(self.view.mas_safeAreaLayoutGuideTop);
+        make.left.right.equalTo(self.view);
         make.bottom.equalTo(self.commentInputContainer.mas_top);
     }];
     
@@ -302,13 +306,13 @@
     }];
 }
 
-- (void)loadComments {
-    self.comments = [[[SRDataManager sharedManager] loadCommentsForStrategy:self.strategy.strategyId] mutableCopy];
+- (void)srm_loadComments {
+    self.comments = [[[SRDataManager sharedManager] srm_loadCommentsForStrategy:self.strategy.strategyId] mutableCopy];
     [self.commentsTableView reloadData];
-    [self updateCommentsTableHeight];
+    [self srm_updateCommentsTableHeight];
 }
 
-- (void)updateCommentsTableHeight {
+- (void)srm_updateCommentsTableHeight {
     CGFloat height = self.comments.count * 60; // Estimated height per comment
     [self.commentsTableView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(height);
@@ -317,7 +321,7 @@
 
 #pragma mark - Actions
 
-- (void)moreTapped {
+- (void)srm_moreTapped {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
@@ -325,13 +329,13 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"Report Strategy"
                                              style:UIAlertActionStyleDestructive
                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self reportStrategy];
+        [self srm_reportStrategy];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Block User"
                                              style:UIAlertActionStyleDestructive
                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self blockUser];
+        [self srm_blockUser];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
@@ -343,7 +347,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)reportStrategy {
+- (void)srm_reportStrategy {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Report Submitted"
                                                                    message:@"Thank you for your report."
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -351,7 +355,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)blockUser {
+- (void)srm_blockUser {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"User Blocked"
                                                                    message:[NSString stringWithFormat:@"You will no longer see posts from %@", self.strategy.authorName]
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -359,7 +363,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)sendComment {
+- (void)srm_sendComment {
     NSString *text = self.commentTextField.text;
     if (text.length == 0) {
         return;
@@ -371,7 +375,7 @@
     comment.content = text;
     comment.isUnderReview = YES; // Mark as under review
     
-    [[SRDataManager sharedManager] addComment:comment];
+    [[SRDataManager sharedManager] srm_addComment:comment];
     
     self.commentTextField.text = @"";
     [self.commentTextField resignFirstResponder];
@@ -419,7 +423,7 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"Report Comment"
                                              style:UIAlertActionStyleDestructive
                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self reportComment:comment];
+        [self srm_reportComment:comment];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
@@ -432,7 +436,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)reportComment:(SRComment *)comment {
+- (void)srm_reportComment:(SRComment *)comment {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Report Submitted"
                                                                    message:@"Thank you for reporting this comment."
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -470,13 +474,13 @@
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self sendComment];
+    [self srm_sendComment];
     return YES;
 }
 
 #pragma mark - Helpers
 
-- (UIImage *)imageWithSystemName:(NSString *)systemName {
+- (UIImage *)srm_imageWithSystemName:(NSString *)systemName {
     if (@available(iOS 13.0, *)) {
         return [UIImage systemImageNamed:systemName];
     }

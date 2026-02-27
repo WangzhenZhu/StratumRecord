@@ -5,23 +5,43 @@
 
 #import "SRSettingsViewController.h"
 #import "SRConstants.h"
+#import "SRUserManager.h"
+#import "SRTabBarController.h"
+#import "SRFeedbackViewController.h"
+#import <LEEAlert/LEEAlert.h>
 #import <Masonry/Masonry.h>
+#import <WebKit/WebKit.h>
 
 @interface SRSettingsViewController () <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) UIView *headerView;
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *subtitleLabel;
-@property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) UIImageView *logoImageView;
-@property (nonatomic, strong) UILabel *appNameLabel;
-@property (nonatomic, strong) UILabel *appTaglineLabel;
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIView *contentView;
 
-// User info
-@property (nonatomic, strong) UIView *userInfoView;
+// Header (top section with gradient)
+@property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) UIView *avatarContainerView;
 @property (nonatomic, strong) UIView *avatarView;
+@property (nonatomic, strong) UILabel *levelBadgeLabel;
 @property (nonatomic, strong) UILabel *usernameLabel;
-@property (nonatomic, strong) UILabel *userDescLabel;
+@property (nonatomic, strong) UIButton *editButton;
+@property (nonatomic, strong) UILabel *bioLabel;
+@property (nonatomic, strong) UIButton *editBioButton;
+@property (nonatomic, strong) UILabel *levelLabel;
+@property (nonatomic, strong) UILabel *expLabel;
+@property (nonatomic, strong) UIView *progressBarBG;
+@property (nonatomic, strong) UIView *progressBarFill;
+
+// Stats card
+@property (nonatomic, strong) UIView *statsCard;
+@property (nonatomic, strong) UILabel *strategiesLabel;
+@property (nonatomic, strong) UILabel *likesLabel;
+@property (nonatomic, strong) UILabel *commentsLabel;
+
+// Content sections
+@property (nonatomic, strong) UIView *badgesSection;
+@property (nonatomic, strong) UIView *gamesSection;
+@property (nonatomic, strong) UIView *accountSection;
+@property (nonatomic, strong) UITableView *settingsTable;
 
 @property (nonatomic, strong) NSArray<NSDictionary *> *settingsItems;
 
@@ -43,146 +63,628 @@
     [self.view addSubview:backgroundImageView];
     [self.view sendSubviewToBack:backgroundImageView];
     
-    [self setupData];
-    [self setupUI];
+    [self srm_setupData];
+    [self srm_setupUI];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
+    
+    if ([[SRUserManager sharedManager] isLoggedIn]) {
+        // Update user stats
+        [[SRUserManager sharedManager] updateUserStats];
+        [self srm_updateUserInfo];
+    }
 }
 
-- (void)setupData {
+- (void)srm_setupData {
     self.settingsItems = @[
         @{@"icon": @"trash", @"title": @"Clear Cache", @"hasArrow": @YES},
         @{@"icon": @"shield", @"title": @"Privacy Policy", @"hasArrow": @YES},
-        @{@"icon": @"info.circle", @"title": @"Version Information", @"value": @"v1.0.0", @"hasArrow": @NO},
+        @{@"icon": @"info.circle", @"title": @"Version", @"value": @"v1.0.0", @"hasArrow": @NO},
         @{@"icon": @"exclamationmark.bubble", @"title": @"Feedback", @"hasArrow": @YES},
         @{@"icon": @"square.and.arrow.up", @"title": @"Share with Friends", @"hasArrow": @YES},
-        @{@"icon": @"star", @"title": @"Rate the App", @"hasArrow": @YES}
+        @{@"icon": @"star", @"title": @"Rate the App", @"hasArrow": @YES},
+        @{@"icon": @"trash.circle", @"title": @"Delete Account", @"hasArrow": @YES},
+        @{@"icon": @"rectangle.portrait.and.arrow.right", @"title": @"Logout", @"hasArrow": @YES}
     ];
 }
 
-- (void)setupUI {
-    // Header view
+- (void)srm_setupUI {
+    // Main scroll view
+    self.scrollView = [[UIScrollView alloc] init];
+    self.scrollView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
+    self.scrollView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:self.scrollView];
+    
+    self.contentView = [[UIView alloc] init];
+    [self.scrollView addSubview:self.contentView];
+    
+    // Header with gradient background
     self.headerView = [[UIView alloc] init];
     self.headerView.backgroundColor = SR_COLOR_PRIMARY;
-    [self.view addSubview:self.headerView];
+    self.headerView.clipsToBounds = YES;
+    [self.contentView addSubview:self.headerView];
     
-    // User Info Card
-    self.userInfoView = [[UIView alloc] init];
-    self.userInfoView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2];
-    self.userInfoView.layer.cornerRadius = 12;
-    [self.headerView addSubview:self.userInfoView];
-    
-    // Avatar
-    self.avatarView = [[UIView alloc] init];
-    self.avatarView.backgroundColor = [UIColor whiteColor];
-    self.avatarView.layer.cornerRadius = 30;
-    [self.userInfoView addSubview:self.avatarView];
-    
-    UILabel *avatarLabel = [[UILabel alloc] init];
-    avatarLabel.text = @"👤";
-    avatarLabel.font = [UIFont systemFontOfSize:32];
-    avatarLabel.textAlignment = NSTextAlignmentCenter;
-    [self.avatarView addSubview:avatarLabel];
-    
-    // Username
-    self.usernameLabel = [[UILabel alloc] init];
-    self.usernameLabel.text = @"Game Strategist";
-    self.usernameLabel.font = [UIFont boldSystemFontOfSize:20];
-    self.usernameLabel.textColor = [UIColor whiteColor];
-    [self.userInfoView addSubview:self.usernameLabel];
-    
-    // User description
-    self.userDescLabel = [[UILabel alloc] init];
-    self.userDescLabel.text = @"Record and share your strategies";
-    self.userDescLabel.font = [UIFont systemFontOfSize:14];
-    self.userDescLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
-    [self.userInfoView addSubview:self.userDescLabel];
-    
-    self.titleLabel = [[UILabel alloc] init];
-    self.titleLabel.text = @"Settings";
-    self.titleLabel.font = [UIFont boldSystemFontOfSize:32];
-    self.titleLabel.textColor = [UIColor whiteColor];
-    [self.headerView addSubview:self.titleLabel];
-    
-    self.subtitleLabel = [[UILabel alloc] init];
-    self.subtitleLabel.text = @"Manage your app preferences";
-    self.subtitleLabel.font = [UIFont systemFontOfSize:16];
-    self.subtitleLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
-    [self.headerView addSubview:self.subtitleLabel];
-    
-    // Table view
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
-    self.tableView.separatorInset = UIEdgeInsetsMake(0, 60, 0, 0);
-    [self.view addSubview:self.tableView];
-    
-    // Layout
-    [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self.view);
-        make.height.mas_equalTo(260);
+    // Header background image
+    UIImageView *headerBackgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mine_bg"]];
+    headerBackgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+    headerBackgroundImageView.clipsToBounds = YES;
+    [self.headerView addSubview:headerBackgroundImageView];
+    [headerBackgroundImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.headerView);
     }];
     
-    [self.userInfoView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self srm_setupHeaderSection];
+    [self srm_setupStatsCard];
+    [self srm_setupBadgesSection];
+    [self srm_setupGamesSection];
+    [self srm_setupAccountSection];
+    [self srm_setupSettingsSection];
+    [self srm_setupConstraints];
+}
+
+#pragma mark - Setup Sections
+
+- (void)srm_setupHeaderSection {
+    // Avatar container with level badge
+    self.avatarContainerView = [[UIView alloc] init];
+    [self.headerView addSubview:self.avatarContainerView];
+    
+    // Main avatar
+    self.avatarView = [[UIView alloc] init];
+    self.avatarView.backgroundColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.4 alpha:1.0];
+    self.avatarView.layer.cornerRadius = 40;
+    self.avatarView.layer.borderWidth = 3;
+    self.avatarView.layer.borderColor = [UIColor whiteColor].CGColor;
+    [self.avatarContainerView addSubview:self.avatarView];
+    
+    // Avatar image/emoji
+    UILabel *avatarEmoji = [[UILabel alloc] init];
+    avatarEmoji.text = @"🎮";
+    avatarEmoji.font = [UIFont systemFontOfSize:40];
+    avatarEmoji.textAlignment = NSTextAlignmentCenter;
+    [self.avatarView addSubview:avatarEmoji];
+    
+    // Level badge
+    self.levelBadgeLabel = [[UILabel alloc] init];
+    self.levelBadgeLabel.text = @"42";
+    self.levelBadgeLabel.font = [UIFont boldSystemFontOfSize:14];
+    self.levelBadgeLabel.textColor = SR_COLOR_PRIMARY;
+    self.levelBadgeLabel.backgroundColor = [UIColor whiteColor];
+    self.levelBadgeLabel.textAlignment = NSTextAlignmentCenter;
+    self.levelBadgeLabel.layer.cornerRadius = 15;
+    self.levelBadgeLabel.layer.borderWidth = 2;
+    self.levelBadgeLabel.layer.borderColor = SR_COLOR_PRIMARY.CGColor;
+    self.levelBadgeLabel.clipsToBounds = YES;
+    [self.avatarContainerView addSubview:self.levelBadgeLabel];
+    
+    // Username with edit button
+    self.usernameLabel = [[UILabel alloc] init];
+    self.usernameLabel.text = @"ShadowTactici...";
+    self.usernameLabel.font = [UIFont boldSystemFontOfSize:22];
+    self.usernameLabel.textColor = [UIColor whiteColor];
+    [self.headerView addSubview:self.usernameLabel];
+    
+    self.editButton = [UIButton buttonWithType:UIButtonTypeSystem];
+//    [self.editButton setImage:[self imageWithSystemName:@"pencil"] forState:UIControlStateNormal];
+    self.editButton.tintColor = [UIColor whiteColor];
+    [self.headerView addSubview:self.editButton];
+    
+    // Bio
+    self.bioLabel = [[UILabel alloc] init];
+    self.bioLabel.text = @"Hardcore gamer & strategy enthusiast. Love sharing tips with the community 🎮";
+    self.bioLabel.font = [UIFont systemFontOfSize:14];
+    self.bioLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
+    self.bioLabel.numberOfLines = 2;
+    [self.headerView addSubview:self.bioLabel];
+    
+    // Edit Bio button
+    self.editBioButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.editBioButton setTitle:@"Edit Bio" forState:UIControlStateNormal];
+    self.editBioButton.titleLabel.font = [UIFont systemFontOfSize:13];
+    [self.editBioButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.9] forState:UIControlStateNormal];
+    [self.headerView addSubview:self.editBioButton];
+    
+    // Level and EXP
+    self.levelLabel = [[UILabel alloc] init];
+    self.levelLabel.text = @"Lv.42";
+    self.levelLabel.font = [UIFont boldSystemFontOfSize:13];
+    self.levelLabel.textColor = [UIColor whiteColor];
+    [self.headerView addSubview:self.levelLabel];
+    
+    self.expLabel = [[UILabel alloc] init];
+    self.expLabel.text = @"7800 / 10000 EXP";
+    self.expLabel.font = [UIFont systemFontOfSize:12];
+    self.expLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+    self.expLabel.textAlignment = NSTextAlignmentRight;
+    [self.headerView addSubview:self.expLabel];
+    
+    // Progress bar
+    self.progressBarBG = [[UIView alloc] init];
+    self.progressBarBG.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3];
+    self.progressBarBG.layer.cornerRadius = 4;
+    [self.headerView addSubview:self.progressBarBG];
+    
+    self.progressBarFill = [[UIView alloc] init];
+    self.progressBarFill.backgroundColor = [UIColor colorWithRed:1.0 green:0.75 blue:0.2 alpha:1.0];
+    self.progressBarFill.layer.cornerRadius = 4;
+    [self.progressBarBG addSubview:self.progressBarFill];
+}
+
+- (void)srm_setupStatsCard {
+    self.statsCard = [[UIView alloc] init];
+    self.statsCard.backgroundColor = [UIColor whiteColor];
+    self.statsCard.layer.cornerRadius = 12;
+    self.statsCard.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.statsCard.layer.shadowOffset = CGSizeMake(0, 2);
+    self.statsCard.layer.shadowRadius = 8;
+    self.statsCard.layer.shadowOpacity = 0.1;
+    [self.contentView addSubview:self.statsCard];
+    
+    SRUser *user = [[SRUserManager sharedManager] currentUser];
+    NSArray *stats = @[
+        @{@"value": @(user.strategiesCount), @"label": @"Strategies"},
+        @{@"value": @(user.likesCount), @"label": @"Likes"},
+        @{@"value": @(user.commentsCount), @"label": @"Comments"}
+    ];
+    
+    UIView *lastStatView = nil;
+    for (int i = 0; i < stats.count; i++) {
+        UIView *statView = [[UIView alloc] init];
+        [self.statsCard addSubview:statView];
+        
+        UILabel *valueLabel = [[UILabel alloc] init];
+        valueLabel.text = [NSString stringWithFormat:@"%@", stats[i][@"value"]];
+        valueLabel.font = [UIFont systemFontOfSize:32 weight:UIFontWeightBold];
+        valueLabel.textColor = SR_COLOR_TEXT_PRIMARY;
+        valueLabel.textAlignment = NSTextAlignmentCenter;
+        [statView addSubview:valueLabel];
+        
+        // Store references to labels
+        if (i == 0) self.strategiesLabel = valueLabel;
+        else if (i == 1) self.likesLabel = valueLabel;
+        else if (i == 2) self.commentsLabel = valueLabel;
+        
+        UILabel *labelText = [[UILabel alloc] init];
+        labelText.text = stats[i][@"label"];
+        labelText.font = [UIFont systemFontOfSize:13];
+        labelText.textColor = SR_COLOR_TEXT_SECONDARY;
+        labelText.textAlignment = NSTextAlignmentCenter;
+        [statView addSubview:labelText];
+        
+        [valueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(statView);
+            make.centerY.equalTo(statView).offset(-8);
+        }];
+        
+        [labelText mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(statView);
+            make.top.equalTo(valueLabel.mas_bottom).offset(4);
+        }];
+        
+        [statView mas_makeConstraints:^(MASConstraintMaker *make) {
+            if (i == 0) {
+                make.left.equalTo(self.statsCard);
+            } else {
+                make.left.equalTo(lastStatView.mas_right);
+            }
+            make.top.bottom.equalTo(self.statsCard);
+            make.width.equalTo(self.statsCard).dividedBy(3);
+        }];
+        
+        lastStatView = statView;
+    }
+}
+
+- (void)srm_setupBadgesSection {
+    self.badgesSection = [[UIView alloc] init];
+    self.badgesSection.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.95];
+    self.badgesSection.layer.cornerRadius = 12;
+    [self.contentView addSubview:self.badgesSection];
+    
+    UILabel *badgesTitle = [[UILabel alloc] init];
+    badgesTitle.text = @"Badges";
+    badgesTitle.font = [UIFont boldSystemFontOfSize:18];
+    badgesTitle.textColor = SR_COLOR_TEXT_PRIMARY;
+    [self.badgesSection addSubview:badgesTitle];
+    
+    NSArray *badges = @[
+        @{@"icon": @"mine_hot", @"label": @"Hot Author"},
+        @{@"icon": @"mine_rank", @"label": @"Top 100"},
+        @{@"icon": @"mine_like", @"label": @"100+ Likes"},
+        @{@"icon": @"mine_creator", @"label": @"Creator"}
+    ];
+    
+    UIView *badgesContainer = [[UIView alloc] init];
+    [self.badgesSection addSubview:badgesContainer];
+    
+    UIView *lastBadge = nil;
+    for (int i = 0; i < badges.count; i++) {
+        UIView *badgeView = [self srm_createBadgeViewWithIcon:badges[i][@"icon"] label:badges[i][@"label"]];
+        [badgesContainer addSubview:badgeView];
+        
+        [badgeView mas_makeConstraints:^(MASConstraintMaker *make) {
+            if (i == 0) {
+                make.left.equalTo(badgesContainer);
+            } else {
+                make.left.equalTo(lastBadge.mas_right).offset(12);
+            }
+            make.top.bottom.equalTo(badgesContainer);
+            make.width.equalTo(badgesContainer).dividedBy(4).offset(-9);
+        }];
+        
+        lastBadge = badgeView;
+    }
+    
+    [badgesTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.badgesSection).offset(20);
+        make.top.equalTo(self.badgesSection).offset(16);
+    }];
+    
+    [badgesContainer mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.badgesSection).offset(20);
+        make.right.equalTo(self.badgesSection).offset(-20);
+        make.top.equalTo(badgesTitle.mas_bottom).offset(12);
+        make.bottom.equalTo(self.badgesSection).offset(-16);
+        make.height.mas_equalTo(90);
+    }];
+}
+
+- (void)srm_setupGamesSection {
+    self.gamesSection = [[UIView alloc] init];
+    self.gamesSection.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.95];
+    self.gamesSection.layer.cornerRadius = 12;
+    [self.contentView addSubview:self.gamesSection];
+    
+    UILabel *gamesTitle = [[UILabel alloc] init];
+    gamesTitle.text = @"Favorite Games";
+    gamesTitle.font = [UIFont boldSystemFontOfSize:18];
+    gamesTitle.textColor = SR_COLOR_TEXT_PRIMARY;
+    [self.gamesSection addSubview:gamesTitle];
+    
+    NSArray *games = @[@"Genshin Impact", @"Valorant", @"Elden Ring"];
+    
+    UIView *lastGameButton = nil;
+    for (int i = 0; i < games.count; i++) {
+        UIButton *gameButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [gameButton setTitle:games[i] forState:UIControlStateNormal];
+        gameButton.titleLabel.font = [UIFont systemFontOfSize:14];
+        [gameButton setTitleColor:SR_COLOR_PRIMARY forState:UIControlStateNormal];
+        gameButton.backgroundColor = [[UIColor colorWithRed:38/255.0 green:181/255.0 blue:168/255.0 alpha:1.0] colorWithAlphaComponent:0.1];
+        gameButton.layer.cornerRadius = 16;
+        gameButton.contentEdgeInsets = UIEdgeInsetsMake(8, 16, 8, 16);
+        [self.gamesSection addSubview:gameButton];
+        
+        [gameButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            if (i == 0) {
+                make.left.equalTo(self.gamesSection).offset(20);
+            } else {
+                make.left.equalTo(lastGameButton.mas_right).offset(10);
+            }
+            make.top.equalTo(gamesTitle.mas_bottom).offset(12);
+        }];
+        
+        lastGameButton = gameButton;
+    }
+    
+    [gamesTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.gamesSection).offset(20);
+        make.top.equalTo(self.gamesSection).offset(16);
+    }];
+}
+
+- (void)srm_setupAccountSection {
+    self.accountSection = [[UIView alloc] init];
+    self.accountSection.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.95];
+    self.accountSection.layer.cornerRadius = 12;
+    [self.contentView addSubview:self.accountSection];
+    
+    UILabel *accountTitle = [[UILabel alloc] init];
+    accountTitle.text = @"Account Info";
+    accountTitle.font = [UIFont boldSystemFontOfSize:18];
+    accountTitle.textColor = SR_COLOR_TEXT_PRIMARY;
+    [self.accountSection addSubview:accountTitle];
+    
+    // Joined row
+    UIView *joinedRow = [self srm_createInfoRowWithIcon:@"calendar" label:@"Joined" value:@"Mar 15, 2024"];
+    [self.accountSection addSubview:joinedRow];
+    
+    // Member Level row
+    UIView *levelRow = [self srm_createInfoRowWithIcon:@"crown" label:@"Member Level" value:@"Lv.42 Elite" valueColor:[UIColor orangeColor]];
+    [self.accountSection addSubview:levelRow];
+    
+    [accountTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.accountSection).offset(20);
+        make.top.equalTo(self.accountSection).offset(16);
+    }];
+    
+    [joinedRow mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.accountSection).inset(20);
+        make.top.equalTo(accountTitle.mas_bottom).offset(12);
+        make.height.mas_equalTo(44);
+    }];
+    
+    [levelRow mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.accountSection).inset(20);
+        make.top.equalTo(joinedRow.mas_bottom).offset(8);
+        make.height.mas_equalTo(44);
+        make.bottom.equalTo(self.accountSection).offset(-16);
+    }];
+}
+
+- (void)srm_setupSettingsSection {
+    UILabel *settingsTitle = [[UILabel alloc] init];
+    settingsTitle.text = @"Settings";
+    settingsTitle.font = [UIFont boldSystemFontOfSize:18];
+    settingsTitle.textColor = SR_COLOR_TEXT_PRIMARY;
+    [self.contentView addSubview:settingsTitle];
+    
+    self.settingsTable = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.settingsTable.delegate = self;
+    self.settingsTable.dataSource = self;
+    self.settingsTable.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.95];
+    self.settingsTable.layer.cornerRadius = 12;
+    self.settingsTable.scrollEnabled = NO;
+    self.settingsTable.separatorInset = UIEdgeInsetsMake(0, 56, 0, 0);
+    [self.contentView addSubview:self.settingsTable];
+    
+    // Store references for constraints
+    self.settingsTable.tag = 100;
+    settingsTitle.tag = 99;
+}
+
+- (void)srm_setupConstraints {
+    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view);
+        make.left.right.bottom.equalTo(self.view);
+    }];
+    
+    [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.scrollView);
+        make.width.equalTo(self.scrollView);
+    }];
+    
+    // Header
+    [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.equalTo(self.contentView);
+        make.height.mas_equalTo(280);
+    }];
+    
+    [self.avatarContainerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.headerView).offset(20);
-        make.right.equalTo(self.headerView).offset(-20);
         make.top.equalTo(self.headerView).offset(60);
-        make.height.mas_equalTo(100);
+        make.width.height.mas_equalTo(80);
     }];
     
     [self.avatarView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.userInfoView).offset(16);
-        make.centerY.equalTo(self.userInfoView);
-        make.width.height.mas_equalTo(60);
+        make.edges.equalTo(self.avatarContainerView);
     }];
     
-    [avatarLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [[self.avatarView.subviews firstObject] mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.avatarView);
     }];
     
-    [self.usernameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.avatarView.mas_right).offset(16);
-        make.right.equalTo(self.userInfoView).offset(-16);
-        make.top.equalTo(self.avatarView).offset(8);
+    [self.levelBadgeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.bottom.equalTo(self.avatarContainerView);
+        make.width.height.mas_equalTo(30);
     }];
     
-    [self.userDescLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.usernameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.avatarContainerView.mas_right).offset(16);
+        make.top.equalTo(self.avatarContainerView).offset(8);
+    }];
+    
+    [self.editButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.usernameLabel.mas_right).offset(8);
+        make.centerY.equalTo(self.usernameLabel);
+        make.width.height.mas_equalTo(24);
+    }];
+    
+    [self.bioLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.usernameLabel);
-        make.right.equalTo(self.userInfoView).offset(-16);
+        make.right.equalTo(self.headerView).offset(-20);
         make.top.equalTo(self.usernameLabel.mas_bottom).offset(6);
     }];
     
-    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.headerView).offset(24);
-        make.bottom.equalTo(self.headerView).offset(-50);
+    [self.editBioButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.usernameLabel);
+        make.top.equalTo(self.bioLabel.mas_bottom).offset(6);
     }];
     
-    [self.subtitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.titleLabel);
-        make.top.equalTo(self.titleLabel.mas_bottom).offset(8);
+    [self.levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.headerView).offset(20);
+        make.bottom.equalTo(self.progressBarBG.mas_top).offset(-8);
     }];
     
-    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.headerView.mas_bottom);
-        make.left.right.bottom.equalTo(self.view);
+    [self.expLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.headerView).offset(-20);
+        make.centerY.equalTo(self.levelLabel);
     }];
+    
+    [self.progressBarBG mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.headerView).offset(20);
+        make.right.equalTo(self.headerView).offset(-20);
+        make.bottom.equalTo(self.headerView).offset(-20);
+        make.height.mas_equalTo(8);
+    }];
+    
+    [self.progressBarFill mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.bottom.equalTo(self.progressBarBG);
+        make.width.equalTo(self.progressBarBG).multipliedBy(0.78); // 7800/10000
+    }];
+    
+    // Stats card
+    [self.statsCard mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.contentView).offset(20);
+        make.right.equalTo(self.contentView).offset(-20);
+        make.top.equalTo(self.headerView.mas_bottom).offset(20);
+        make.height.mas_equalTo(90);
+    }];
+    
+    // Badges section
+    [self.badgesSection mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.contentView).offset(20);
+        make.right.equalTo(self.contentView).offset(-20);
+        make.top.equalTo(self.statsCard.mas_bottom).offset(16);
+    }];
+    
+    // Games section
+    [self.gamesSection mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.contentView).offset(20);
+        make.right.equalTo(self.contentView).offset(-20);
+        make.top.equalTo(self.badgesSection.mas_bottom).offset(16);
+        make.height.mas_equalTo(90);
+    }];
+    
+    // Account section
+    [self.accountSection mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.contentView).offset(20);
+        make.right.equalTo(self.contentView).offset(-20);
+        make.top.equalTo(self.gamesSection.mas_bottom).offset(16);
+    }];
+    
+    // Settings section
+    UILabel *settingsTitle = [self.contentView viewWithTag:99];
+    [settingsTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.contentView).offset(20);
+        make.top.equalTo(self.accountSection.mas_bottom).offset(24);
+    }];
+    
+    [self.settingsTable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.contentView).offset(20);
+        make.right.equalTo(self.contentView).offset(-20);
+        make.top.equalTo(settingsTitle.mas_bottom).offset(12);
+        make.height.mas_equalTo(self.settingsItems.count * 56);
+        make.bottom.equalTo(self.contentView).offset(-100);
+    }];
+}
+
+#pragma mark - Helper Methods
+
+- (UIView *)srm_createBadgeViewWithEmoji:(NSString *)emoji label:(NSString *)label {
+    UIView *container = [[UIView alloc] init];
+    container.backgroundColor = [[UIColor systemGrayColor] colorWithAlphaComponent:0.1];
+    container.layer.cornerRadius = 12;
+    
+    UILabel *emojiLabel = [[UILabel alloc] init];
+    emojiLabel.text = emoji;
+    emojiLabel.font = [UIFont systemFontOfSize:32];
+    emojiLabel.textAlignment = NSTextAlignmentCenter;
+    [container addSubview:emojiLabel];
+    
+    UILabel *titleLabel = [[UILabel alloc] init];
+    titleLabel.text = label;
+    titleLabel.font = [UIFont systemFontOfSize:11];
+    titleLabel.textColor = SR_COLOR_TEXT_SECONDARY;
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.numberOfLines = 2;
+    [container addSubview:titleLabel];
+    
+    [emojiLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(container);
+        make.top.equalTo(container).offset(12);
+    }];
+    
+    [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(container).inset(4);
+        make.top.equalTo(emojiLabel.mas_bottom).offset(4);
+        make.bottom.lessThanOrEqualTo(container).offset(-8);
+    }];
+    
+    return container;
+}
+
+- (UIView *)srm_createBadgeViewWithIcon:(NSString *)iconName label:(NSString *)label {
+    UIView *container = [[UIView alloc] init];
+    container.backgroundColor = [[UIColor systemGrayColor] colorWithAlphaComponent:0.1];
+    container.layer.cornerRadius = 12;
+    
+    UIImageView *iconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:iconName]];
+    iconView.contentMode = UIViewContentModeScaleAspectFit;
+    [container addSubview:iconView];
+    
+    UILabel *titleLabel = [[UILabel alloc] init];
+    titleLabel.text = label;
+    titleLabel.font = [UIFont systemFontOfSize:11];
+    titleLabel.textColor = SR_COLOR_TEXT_SECONDARY;
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.numberOfLines = 2;
+    [container addSubview:titleLabel];
+    
+    [iconView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(container);
+        make.top.equalTo(container).offset(12);
+        make.width.height.mas_equalTo(40);
+    }];
+    
+    [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(container).inset(4);
+        make.top.equalTo(iconView.mas_bottom).offset(4);
+        make.bottom.lessThanOrEqualTo(container).offset(-8);
+    }];
+    
+    return container;
+}
+
+- (UIView *)srm_createInfoRowWithIcon:(NSString *)iconName label:(NSString *)label value:(NSString *)value {
+    return [self srm_createInfoRowWithIcon:iconName label:label value:value valueColor:SR_COLOR_TEXT_SECONDARY];
+}
+
+- (UIView *)srm_createInfoRowWithIcon:(NSString *)iconName label:(NSString *)label value:(NSString *)value valueColor:(UIColor *)valueColor {
+    UIView *row = [[UIView alloc] init];
+    
+    UIImageView *iconView = [[UIImageView alloc] init];
+    if (@available(iOS 13.0, *)) {
+        iconView.image = [self srm_imageWithSystemName:iconName];
+    }
+    iconView.tintColor = SR_COLOR_PRIMARY;
+    [row addSubview:iconView];
+    
+    UILabel *labelText = [[UILabel alloc] init];
+    labelText.text = label;
+    labelText.font = [UIFont systemFontOfSize:15];
+    labelText.textColor = SR_COLOR_TEXT_PRIMARY;
+    [row addSubview:labelText];
+    
+    UILabel *valueText = [[UILabel alloc] init];
+    valueText.text = value;
+    valueText.font = [UIFont systemFontOfSize:15];
+    valueText.textColor = valueColor;
+    [row addSubview:valueText];
+    
+    [iconView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(row);
+        make.centerY.equalTo(row);
+        make.width.height.mas_equalTo(24);
+    }];
+    
+    [labelText mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(iconView.mas_right).offset(12);
+        make.centerY.equalTo(row);
+    }];
+    
+    [valueText mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(row);
+        make.centerY.equalTo(row);
+    }];
+    
+    return row;
+}
+
+- (UIImage *)srm_imageWithSystemName:(NSString *)name API_AVAILABLE(ios(13.0)) {
+    return [UIImage systemImageNamed:name];
 }
 
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        return self.settingsItems.count;
-    }
-    return 0;
+    return self.settingsItems.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -190,12 +692,14 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
-        cell.backgroundColor = [UIColor whiteColor];
+        cell.backgroundColor = [UIColor clearColor];
+        cell.textLabel.font = [UIFont systemFontOfSize:16];
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:14];
     }
     
     NSDictionary *item = self.settingsItems[indexPath.row];
     cell.textLabel.text = item[@"title"];
-    cell.textLabel.font = [UIFont systemFontOfSize:16];
+    cell.textLabel.textColor = SR_COLOR_TEXT_PRIMARY;
     
     if (item[@"value"]) {
         cell.detailTextLabel.text = item[@"value"];
@@ -214,63 +718,14 @@
     if (@available(iOS 13.0, *)) {
         UIImage *icon = [UIImage systemImageNamed:item[@"icon"]];
         cell.imageView.image = icon;
-        cell.imageView.tintColor = SR_COLOR_TEXT_SECONDARY;
+        cell.imageView.tintColor = [UIColor colorWithWhite:0.4 alpha:1.0];
     }
     
     return cell;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if (section == 0) {
-        UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 200)];
-        footerView.backgroundColor = [UIColor clearColor];
-        
-        // Logo
-        UIView *logoView = [[UIView alloc] init];
-        logoView.backgroundColor = SR_COLOR_PRIMARY;
-        logoView.layer.cornerRadius = 40;
-        [footerView addSubview:logoView];
-        
-        self.appNameLabel = [[UILabel alloc] init];
-        self.appNameLabel.text = @"StratumRecord";
-        self.appNameLabel.font = [UIFont boldSystemFontOfSize:20];
-        self.appNameLabel.textColor = SR_COLOR_TEXT_PRIMARY;
-        self.appNameLabel.textAlignment = NSTextAlignmentCenter;
-        [footerView addSubview:self.appNameLabel];
-        
-        self.appTaglineLabel = [[UILabel alloc] init];
-        self.appTaglineLabel.text = @"Your Game Strategy Companion";
-        self.appTaglineLabel.font = [UIFont systemFontOfSize:14];
-        self.appTaglineLabel.textColor = SR_COLOR_TEXT_SECONDARY;
-        self.appTaglineLabel.textAlignment = NSTextAlignmentCenter;
-        [footerView addSubview:self.appTaglineLabel];
-        
-        [logoView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(footerView);
-            make.top.equalTo(footerView).offset(40);
-            make.width.height.mas_equalTo(80);
-        }];
-        
-        [self.appNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(footerView);
-            make.top.equalTo(logoView.mas_bottom).offset(16);
-        }];
-        
-        [self.appTaglineLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(footerView);
-            make.top.equalTo(self.appNameLabel.mas_bottom).offset(8);
-        }];
-        
-        return footerView;
-    }
-    return nil;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 0) {
-        return 200;
-    }
-    return 0;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 56;
 }
 
 #pragma mark - UITableViewDelegate
@@ -282,85 +737,79 @@
     NSString *title = item[@"title"];
     
     if ([title isEqualToString:@"Clear Cache"]) {
-        [self clearCache];
+        [self srm_clearCache];
     } else if ([title isEqualToString:@"Privacy Policy"]) {
-        [self showPrivacyPolicy];
+        [self srm_showPrivacyPolicy];
     } else if ([title isEqualToString:@"Feedback"]) {
-        [self showFeedback];
+        [self srm_showFeedback];
     } else if ([title isEqualToString:@"Share with Friends"]) {
-        [self shareApp];
+        [self srm_shareApp];
     } else if ([title isEqualToString:@"Rate the App"]) {
-        [self rateApp];
+        [self srm_rateApp];
+    } else if ([title isEqualToString:@"Delete Account"]) {
+        [self srm_deleteAccount];
+    } else if ([title isEqualToString:@"Logout"]) {
+        [self srm_logout];
     }
 }
 
 #pragma mark - Actions
 
-- (void)clearCache {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Clear Cache"
-                                                                   message:@"Are you sure you want to clear the cache?"
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Clear"
-                                             style:UIAlertActionStyleDestructive
-                                           handler:^(UIAlertAction * _Nonnull action) {
-        // Clear cache
+- (void)srm_clearCache {
+    [LEEAlert alert].config
+    .LeeTitle(@"Clear Cache")
+    .LeeContent(@"Are you sure you want to clear the cache?")
+    .LeeCancelAction(@"Cancel", ^{
+    })
+    .LeeDestructiveAction(@"Clear", ^{
         [[NSURLCache sharedURLCache] removeAllCachedResponses];
         
-        UIAlertController *successAlert = [UIAlertController alertControllerWithTitle:@"Success"
-                                                                               message:@"Cache cleared successfully"
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-        [successAlert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-        [self presentViewController:successAlert animated:YES completion:nil];
-    }]];
-    
-    [self presentViewController:alert animated:YES completion:nil];
+        [LEEAlert alert].config
+        .LeeTitle(@"Success")
+        .LeeContent(@"Cache cleared successfully")
+        .LeeCancelAction(@"OK", ^{
+        })
+        .LeeShow();
+    })
+    .LeeShow();
 }
 
-- (void)showPrivacyPolicy {
+- (void)srm_showPrivacyPolicy {
     UIViewController *privacyVC = [[UIViewController alloc] init];
     privacyVC.title = @"Privacy Policy";
     privacyVC.view.backgroundColor = [UIColor whiteColor];
+    privacyVC.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                                     style:UIBarButtonItemStylePlain
+                                                                                    target:self
+                                                                                    action:@selector(srm_backFromPrivacyPolicy)];
     
-    UITextView *textView = [[UITextView alloc] init];
-    textView.text = @"Privacy Policy\n\nStratumRecord respects your privacy. This app does not collect any personal information. All your game strategies are stored locally on your device.\n\nWe do not share your data with any third parties.\n\nLast updated: February 24, 2026";
-    textView.font = [UIFont systemFontOfSize:16];
-    textView.editable = NO;
-    textView.textContainerInset = UIEdgeInsetsMake(20, 20, 20, 20);
-    [privacyVC.view addSubview:textView];
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero];
+    [privacyVC.view addSubview:webView];
     
-    [textView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [webView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(privacyVC.view);
     }];
     
+    NSURL *url = [NSURL URLWithString:@"https://www.freeprivacypolicy.com/live/14f863a1-28b9-465f-afc1-eca9a78805d6"];
+    if (url) {
+        [webView loadRequest:[NSURLRequest requestWithURL:url]];
+    }
+    
+    self.navigationController.navigationBar.hidden = NO;
     [self.navigationController pushViewController:privacyVC animated:YES];
 }
 
-- (void)showFeedback {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Feedback"
-                                                                   message:@"Please enter your feedback"
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    
-    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = @"Your feedback...";
-    }];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Submit"
-                                             style:UIAlertActionStyleDefault
-                                           handler:^(UIAlertAction * _Nonnull action) {
-        UIAlertController *successAlert = [UIAlertController alertControllerWithTitle:@"Thank You"
-                                                                               message:@"Your feedback has been submitted"
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-        [successAlert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-        [self presentViewController:successAlert animated:YES completion:nil];
-    }]];
-    
-    [self presentViewController:alert animated:YES completion:nil];
+- (void)srm_backFromPrivacyPolicy {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)shareApp {
+- (void)srm_showFeedback {
+    SRFeedbackViewController *feedbackVC = [[SRFeedbackViewController alloc] init];
+    self.navigationController.navigationBar.hidden = NO;
+    [self.navigationController pushViewController:feedbackVC animated:YES];
+}
+
+- (void)srm_shareApp {
     NSString *text = @"Check out StratumRecord - Your Game Strategy Companion!";
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[text]
                                                                              applicationActivities:nil];
@@ -375,25 +824,85 @@
     [self presentViewController:activityVC animated:YES completion:nil];
 }
 
-- (void)rateApp {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Rate StratumRecord"
-                                                                   message:@"If you enjoy using StratumRecord, please take a moment to rate it in the App Store!"
-                                                            preferredStyle:UIAlertControllerStyleAlert];
+- (void)srm_rateApp {
+    [LEEAlert alert].config
+    .LeeTitle(@"Rate StratumRecord")
+    .LeeContent(@"If you enjoy using StratumRecord, please take a moment to rate it in the App Store!")
+    .LeeAction(@"Rate Now", ^{
+        [LEEAlert alert].config
+        .LeeTitle(@"Thank You")
+        .LeeContent(@"Thank you for your support!")
+        .LeeCancelAction(@"OK", ^{
+        })
+        .LeeShow();
+    })
+    .LeeCancelAction(@"Later", ^{
+    })
+    .LeeShow();
+}
+
+- (void)srm_deleteAccount {
+    [LEEAlert alert].config
+    .LeeTitle(@"Delete Account")
+    .LeeContent(@"Are you sure you want to delete your account? This action cannot be undone. All your strategies and data will be permanently deleted.")
+    .LeeCancelAction(@"Cancel", ^{
+    })
+    .LeeDestructiveAction(@"Delete", ^{
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"MY_STRATEGIES"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"PLAZA_STRATEGIES"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"COMMENTS"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [LEEAlert alert].config
+        .LeeTitle(@"Account Deleted")
+        .LeeContent(@"Your account has been successfully deleted.")
+        .LeeCancelAction(@"OK", ^{
+            self.tabBarController.selectedIndex = 0;
+        })
+        .LeeShow();
+    })
+    .LeeShow();
+}
+
+- (void)srm_logout {
+    [LEEAlert alert].config
+    .LeeTitle(@"Logout")
+    .LeeContent(@"Are you sure you want to logout?")
+    .LeeCancelAction(@"Cancel", ^{
+    })
+    .LeeDestructiveAction(@"Logout", ^{
+        [[SRUserManager sharedManager] logout];
+        
+        [LEEAlert alert].config
+        .LeeTitle(@"Logged Out")
+        .LeeContent(@"You have been successfully logged out.")
+        .LeeCancelAction(@"OK", ^{
+            self.tabBarController.selectedIndex = 0;
+            if ([self.tabBarController isKindOfClass:[SRTabBarController class]]) {
+                [(SRTabBarController *)self.tabBarController srm_presentLoginIfNeeded];
+            }
+        })
+        .LeeShow();
+    })
+    .LeeShow();
+}
+
+#pragma mark - User Info
+
+- (void)srm_updateUserInfo {
+    SRUser *user = [[SRUserManager sharedManager] currentUser];
+    if (!user) return;
     
-    [alert addAction:[UIAlertAction actionWithTitle:@"Rate Now"
-                                             style:UIAlertActionStyleDefault
-                                           handler:^(UIAlertAction * _Nonnull action) {
-        // In a real app, this would open the App Store
-        UIAlertController *successAlert = [UIAlertController alertControllerWithTitle:@"Thank You"
-                                                                               message:@"Thank you for your support!"
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-        [successAlert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-        [self presentViewController:successAlert animated:YES completion:nil];
-    }]];
+    // Update username
+    self.usernameLabel.text = user.username;
     
-    [alert addAction:[UIAlertAction actionWithTitle:@"Later" style:UIAlertActionStyleCancel handler:nil]];
+    // Update level badge
+    self.levelBadgeLabel.text = [NSString stringWithFormat:@"%ld", (long)user.level];
     
-    [self presentViewController:alert animated:YES completion:nil];
+    // Update stats
+    self.strategiesLabel.text = [NSString stringWithFormat:@"%ld", (long)user.strategiesCount];
+    self.likesLabel.text = [NSString stringWithFormat:@"%ld", (long)user.likesCount];
+    self.commentsLabel.text = [NSString stringWithFormat:@"%ld", (long)user.commentsCount];
 }
 
 @end

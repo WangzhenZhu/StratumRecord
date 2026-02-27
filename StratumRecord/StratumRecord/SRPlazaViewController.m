@@ -40,17 +40,17 @@
     [self.view addSubview:backgroundImageView];
     [self.view sendSubviewToBack:backgroundImageView];
     
-    [self setupUI];
-    [self loadData];
+    [self srm_setupUI];
+    [self srm_loadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self loadData];
+    [self srm_loadData];
     self.navigationController.navigationBar.hidden = YES;
 }
 
-- (void)setupUI {
+- (void)srm_setupUI {
     // Header view
     self.headerView = [[UIView alloc] init];
     self.headerView.backgroundColor = SR_COLOR_PRIMARY;
@@ -87,15 +87,16 @@
     self.publishButton.layer.shadowRadius = 8;
     self.publishButton.layer.shadowOpacity = 0.3;
     if (@available(iOS 13.0, *)) {
-        [self.publishButton setImage:[UIImage systemImageNamed:@"square.and.pencil"] forState:UIControlStateNormal];
+        [self.publishButton setImage:[UIImage imageNamed:@"pulish_icon"] forState:UIControlStateNormal];
     }
     self.publishButton.tintColor = [UIColor whiteColor];
-    [self.publishButton addTarget:self action:@selector(publishButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.publishButton addTarget:self action:@selector(srm_publishButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.publishButton];
     
     // Layout
     [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self.view);
+        make.top.equalTo(self.view);
+        make.left.right.equalTo(self.view);
         make.height.mas_equalTo(180);
     }];
     
@@ -121,18 +122,18 @@
     }];
 }
 
-- (void)loadData {
-    self.strategies = [[[SRDataManager sharedManager] loadPlazaStrategies] mutableCopy];
+- (void)srm_loadData {
+    self.strategies = [[[SRDataManager sharedManager] srm_loadPlazaStrategies] mutableCopy];
     [self.tableView reloadData];
 }
 
-- (void)publishButtonTapped {
+- (void)srm_publishButtonTapped {
     SREditStrategyViewController *editVC = [[SREditStrategyViewController alloc] initWithStrategy:nil];
     editVC.isPublishMode = YES;
     __weak typeof(self) weakSelf = self;
     editVC.saveCompletion = ^(SRStrategy *strategy) {
-        [[SRDataManager sharedManager] publishStrategy:strategy];
-        [weakSelf loadData];
+        [[SRDataManager sharedManager] srm_publishStrategy:strategy];
+        [weakSelf srm_loadData];
     };
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editVC];
     nav.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -150,18 +151,18 @@
     SRStrategy *strategy = self.strategies[indexPath.row];
     
     __weak typeof(self) weakSelf = self;
-    [cell configureWithStrategy:strategy
+    [cell srm_configureWithStrategy:strategy
                    likeHandler:^{
-        [weakSelf handleLikeForStrategy:strategy];
+        [weakSelf srm_handleLikeForStrategy:strategy];
     }
                 commentHandler:^{
-        [weakSelf showStrategyDetail:strategy];
+        [weakSelf srm_showStrategyDetail:strategy];
     }
                   shareHandler:^{
-        [weakSelf handleShareForStrategy:strategy];
+        [weakSelf srm_handleShareForStrategy:strategy];
     }
                    moreHandler:^{
-        [weakSelf showMoreOptionsForStrategy:strategy];
+        [weakSelf srm_showMoreOptionsForStrategy:strategy];
     }];
     
     return cell;
@@ -179,27 +180,65 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [self showStrategyDetail:self.strategies[indexPath.row]];
+    [self srm_showStrategyDetail:self.strategies[indexPath.row]];
 }
 
 #pragma mark - Handlers
 
-- (void)handleLikeForStrategy:(SRStrategy *)strategy {
+- (void)srm_handleLikeForStrategy:(SRStrategy *)strategy {
     strategy.isLiked = !strategy.isLiked;
     strategy.likeCount += strategy.isLiked ? 1 : -1;
-    [[SRDataManager sharedManager] updatePlazaStrategy:strategy];
+    [[SRDataManager sharedManager] srm_updatePlazaStrategy:strategy];
     [self.tableView reloadData];
 }
 
-- (void)handleShareForStrategy:(SRStrategy *)strategy {
-    NSString *text = [NSString stringWithFormat:@"Check out this strategy: %@\n%@", strategy.title, strategy.content];
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[text] 
-                                                                             applicationActivities:nil];
-    activityVC.popoverPresentationController.sourceView = self.view;
-    [self presentViewController:activityVC animated:YES completion:nil];
+- (void)srm_handleShareForStrategy:(SRStrategy *)strategy {
+    // Show confirmation dialog
+    UIAlertController *confirmAlert = [UIAlertController alertControllerWithTitle:@"Save Strategy"
+                                                                           message:@"Do you want to save this strategy to your list?"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    
+    [confirmAlert addAction:[UIAlertAction actionWithTitle:@"Cancel"
+                                                     style:UIAlertActionStyleCancel
+                                                   handler:nil]];
+    
+    [confirmAlert addAction:[UIAlertAction actionWithTitle:@"Confirm"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * _Nonnull action) {
+        // Check if strategy already exists in personal list
+        NSArray<SRStrategy *> *myStrategies = [[SRDataManager sharedManager] srm_loadMyStrategies];
+        BOOL alreadyExists = NO;
+        for (SRStrategy *myStrategy in myStrategies) {
+            if ([myStrategy.strategyId isEqualToString:strategy.strategyId]) {
+                alreadyExists = YES;
+                break;
+            }
+        }
+        
+        if (alreadyExists) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Already Exists"
+                                                                           message:@"This strategy is already in your list"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
+        } else {
+            // Create copy and save to personal list
+            SRStrategy *copiedStrategy = [[SRStrategy alloc] initWithDictionary:[strategy toDictionary]];
+            copiedStrategy.strategyId = [[NSUUID UUID] UUIDString]; // Generate new ID
+            [[SRDataManager sharedManager] srm_addMyStrategy:copiedStrategy];
+            
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success"
+                                                                           message:@"Strategy saved to your list"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }]];
+    
+    [self presentViewController:confirmAlert animated:YES completion:nil];
 }
 
-- (void)showMoreOptionsForStrategy:(SRStrategy *)strategy {
+- (void)srm_showMoreOptionsForStrategy:(SRStrategy *)strategy {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
@@ -207,13 +246,13 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"Report Strategy"
                                              style:UIAlertActionStyleDestructive
                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self reportStrategy:strategy];
+        [self srm_reportStrategy:strategy];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Block User"
                                              style:UIAlertActionStyleDestructive
                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self blockUser:strategy.authorName];
+        [self srm_blockUser:strategy.authorName];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
@@ -228,7 +267,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)reportStrategy:(SRStrategy *)strategy {
+- (void)srm_reportStrategy:(SRStrategy *)strategy {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Report Submitted"
                                                                    message:@"Thank you for your report. We will review this strategy."
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -236,7 +275,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)blockUser:(NSString *)userName {
+- (void)srm_blockUser:(NSString *)userName {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"User Blocked"
                                                                    message:[NSString stringWithFormat:@"You will no longer see posts from %@", userName]
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -244,7 +283,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)showStrategyDetail:(SRStrategy *)strategy {
+- (void)srm_showStrategyDetail:(SRStrategy *)strategy {
     SRStrategyDetailViewController *detailVC = [[SRStrategyDetailViewController alloc] initWithStrategy:strategy];
     [self.navigationController pushViewController:detailVC animated:YES];
 }

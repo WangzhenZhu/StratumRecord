@@ -8,6 +8,7 @@
 #import "SceneDelegate.h"
 #import "SRTabBarController.h"
 #import "SRDataManager.h"
+#import <LEEAlert/LEEAlert.h>
 
 @interface SceneDelegate ()
 
@@ -18,13 +19,14 @@
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
     // Initialize mock data
-    [[SRDataManager sharedManager] initializeMockDataIfNeeded];
+    [[SRDataManager sharedManager] srm_initializeMockDataIfNeeded];
     
     UIWindowScene *windowScene = (UIWindowScene *)scene;
     self.window = [[UIWindow alloc] initWithWindowScene:windowScene];
     
     SRTabBarController *tabBarController = [[SRTabBarController alloc] init];
     self.window.rootViewController = tabBarController;
+    [LEEAlert configMainWindow:self.window];
     
     [self.window makeKeyAndVisible];
 }

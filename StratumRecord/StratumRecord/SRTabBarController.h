@@ -9,4 +9,6 @@
 
 @interface SRTabBarController : UITabBarController
 
+- (void)srm_presentLoginIfNeeded;
+
 @end

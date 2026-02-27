@@ -34,6 +34,7 @@
 @property (nonatomic, strong) NSArray<NSString *> *games;
 @property (nonatomic, assign) NSInteger selectedImportance;
 @property (nonatomic, strong) NSString *selectedGame;
+@property (nonatomic, strong) NSString *selectedGameIcon;
 
 @end
 
@@ -44,13 +45,13 @@
         _strategy = strategy ?: [[SRStrategy alloc] init];
         _selectedImportance = _strategy.importance;
         _selectedGame = _strategy.gameName;
+        _selectedGameIcon = _strategy.gameIcon;
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.view.backgroundColor = SR_COLOR_BACKGROUND;
     self.games = SR_PREDEFINED_GAMES;
     
@@ -59,46 +60,50 @@
     backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
     backgroundImageView.frame = self.view.bounds;
     backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    UIView *coverView = [[UIView alloc] initWithFrame:self.view.bounds];
+    coverView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
     [self.view addSubview:backgroundImageView];
     [self.view sendSubviewToBack:backgroundImageView];
+    [self.view addSubview:coverView];
     
-    [self setupNavigationBar];
-    [self setupUI];
-    [self prefillData];
+    
+    [self srm_setupNavigationBar];
+    [self srm_setupUI];
+    [self srm_prefillData];
 }
 
-- (void)setupNavigationBar {
+- (void)srm_setupNavigationBar {
     if (self.isPublishMode) {
         self.title = @"Publish Strategy";
     } else {
         self.title = self.strategy.title.length > 0 ? @"Edit Strategy" : @"New Strategy";
     }
     
-    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[self imageWithSystemName:@"xmark"] 
+    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[self srm_imageWithSystemName:@"xmark"] 
                                                                      style:UIBarButtonItemStylePlain 
                                                                     target:self 
-                                                                    action:@selector(closeTapped)];
+                                                                    action:@selector(srm_closeTapped)];
     self.navigationItem.leftBarButtonItem = closeButton;
     
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:self.isPublishMode ? @"Publish" : @"Save"
                                                                    style:UIBarButtonItemStyleDone 
                                                                   target:self 
-                                                                  action:@selector(saveTapped)];
+                                                                  action:@selector(srm_saveTapped)];
     saveButton.tintColor = SR_COLOR_PRIMARY;
     self.navigationItem.rightBarButtonItem = saveButton;
     
     // Add delete button if editing existing strategy
     if (self.strategy.title.length > 0 && !self.isPublishMode) {
-        UIBarButtonItem *deleteButton = [[UIBarButtonItem alloc] initWithImage:[self imageWithSystemName:@"trash"]
+        UIBarButtonItem *deleteButton = [[UIBarButtonItem alloc] initWithImage:[self srm_imageWithSystemName:@"trash"]
                                                                          style:UIBarButtonItemStylePlain
                                                                         target:self
-                                                                        action:@selector(deleteTapped)];
+                                                                        action:@selector(srm_deleteTapped)];
         deleteButton.tintColor = SR_COLOR_HIGH;
         self.navigationItem.rightBarButtonItems = @[saveButton, deleteButton];
     }
 }
 
-- (void)setupUI {
+- (void)srm_setupUI {
     self.scrollView = [[UIScrollView alloc] init];
     self.scrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.scrollView];
@@ -107,31 +112,32 @@
     [self.scrollView addSubview:self.contentView];
     
     // Game section
-    self.gameLabel = [self createSectionLabel:@"Game"];
+    self.gameLabel = [self srm_createSectionLabel:@"Game"];
     [self.contentView addSubview:self.gameLabel];
     
     self.gamePickerButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.gamePickerButton setTitle:@"Select a game" forState:UIControlStateNormal];
+    [self.gamePickerButton setTitle:@"🎮 Select a game" forState:UIControlStateNormal];
     self.gamePickerButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     self.gamePickerButton.backgroundColor = [UIColor whiteColor];
     self.gamePickerButton.layer.cornerRadius = 8;
     self.gamePickerButton.contentEdgeInsets = UIEdgeInsetsMake(0, 16, 0, 16);
     self.gamePickerButton.tintColor = SR_COLOR_TEXT_SECONDARY;
-    [self.gamePickerButton addTarget:self action:@selector(gamePickerTapped) forControlEvents:UIControlEventTouchUpInside];
+    self.gamePickerButton.titleLabel.font = [UIFont systemFontOfSize:16];
+    [self.gamePickerButton addTarget:self action:@selector(srm_gamePickerTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.gamePickerButton];
     
-    self.customGameField = [self createTextField:@"Or enter custom game name"];
+    self.customGameField = [self srm_createTextField:@"Or enter custom game name"];
     [self.contentView addSubview:self.customGameField];
     
     // Title section
-    self.titleLabel = [self createSectionLabel:@"Title"];
+    self.titleLabel = [self srm_createSectionLabel:@"Title"];
     [self.contentView addSubview:self.titleLabel];
     
-    self.titleField = [self createTextField:@"Enter strategy title"];
+    self.titleField = [self srm_createTextField:@"Enter strategy title"];
     [self.contentView addSubview:self.titleField];
     
     // Content section
-    self.contentLabel = [self createSectionLabel:@"Strategy Content"];
+    self.contentLabel = [self srm_createSectionLabel:@"Strategy Content"];
     [self.contentView addSubview:self.contentLabel];
     
     self.contentTextView = [[UITextView alloc] init];
@@ -151,7 +157,7 @@
     [self.contentTextView addSubview:self.contentPlaceholder];
     
     // Importance section
-    self.importanceLabel = [self createSectionLabel:@"Importance Level"];
+    self.importanceLabel = [self srm_createSectionLabel:@"Importance Level"];
     [self.contentView addSubview:self.importanceLabel];
     
     UIStackView *importanceStack = [[UIStackView alloc] init];
@@ -160,9 +166,9 @@
     importanceStack.spacing = 12;
     [self.contentView addSubview:importanceStack];
     
-    self.highButton = [self createImportanceButton:@"High" importance:SRImportanceLevelHigh];
-    self.mediumButton = [self createImportanceButton:@"Medium" importance:SRImportanceLevelMedium];
-    self.lowButton = [self createImportanceButton:@"Low" importance:SRImportanceLevelLow];
+    self.highButton = [self srm_createImportanceButton:@"High" importance:SRImportanceLevelHigh];
+    self.mediumButton = [self srm_createImportanceButton:@"Medium" importance:SRImportanceLevelMedium];
+    self.lowButton = [self srm_createImportanceButton:@"Low" importance:SRImportanceLevelLow];
     
     [importanceStack addArrangedSubview:self.highButton];
     [importanceStack addArrangedSubview:self.mediumButton];
@@ -170,7 +176,8 @@
     
     // Layout
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
+        make.top.equalTo(self.view.mas_safeAreaLayoutGuideTop);
+        make.left.right.bottom.equalTo(self.view);
     }];
     
     [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -234,10 +241,10 @@
         make.bottom.equalTo(self.contentView).offset(-40);
     }];
     
-    [self updateImportanceButtons];
+    [self srm_updateImportanceButtons];
 }
 
-- (UILabel *)createSectionLabel:(NSString *)text {
+- (UILabel *)srm_createSectionLabel:(NSString *)text {
     UILabel *label = [[UILabel alloc] init];
     label.text = text;
     label.font = [UIFont boldSystemFontOfSize:17];
@@ -245,7 +252,7 @@
     return label;
 }
 
-- (UITextField *)createTextField:(NSString *)placeholder {
+- (UITextField *)srm_createTextField:(NSString *)placeholder {
     UITextField *field = [[UITextField alloc] init];
     field.placeholder = placeholder;
     field.font = [UIFont systemFontOfSize:16];
@@ -256,24 +263,29 @@
     return field;
 }
 
-- (UIButton *)createImportanceButton:(NSString *)title importance:(SRImportanceLevel)importance {
+- (UIButton *)srm_createImportanceButton:(NSString *)title importance:(SRImportanceLevel)importance {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setTitle:title forState:UIControlStateNormal];
     button.titleLabel.font = [UIFont boldSystemFontOfSize:16];
     button.layer.cornerRadius = 8;
     button.layer.borderWidth = 2;
     button.tag = importance;
-    [button addTarget:self action:@selector(importanceTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(srm_importanceTapped:) forControlEvents:UIControlEventTouchUpInside];
     return button;
 }
 
-- (void)prefillData {
+- (void)srm_prefillData {
     if (self.strategy.gameName.length > 0) {
         if ([self.games containsObject:self.strategy.gameName]) {
+            NSString *icon = self.strategy.gameIcon.length > 0 ? self.strategy.gameIcon : [SRConstants iconForGameName:self.strategy.gameName];
             [self.gamePickerButton setTitle:self.strategy.gameName forState:UIControlStateNormal];
             self.selectedGame = self.strategy.gameName;
+            self.selectedGameIcon = icon;
         } else {
             self.customGameField.text = self.strategy.gameName;
+            if (self.strategy.gameIcon.length > 0) {
+                self.selectedGameIcon = self.strategy.gameIcon;
+            }
         }
     }
     
@@ -282,7 +294,7 @@
     self.contentPlaceholder.hidden = self.strategy.content.length > 0;
 }
 
-- (void)updateImportanceButtons {
+- (void)srm_updateImportanceButtons {
     NSArray *buttons = @[self.highButton, self.mediumButton, self.lowButton];
     for (UIButton *button in buttons) {
         SRImportanceLevel importance = (SRImportanceLevel)button.tag;
@@ -302,17 +314,19 @@
 
 #pragma mark - Actions
 
-- (void)gamePickerTapped {
+- (void)srm_gamePickerTapped {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select Game"
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
     
     for (NSString *game in self.games) {
+        NSString *icon = [SRConstants iconForGameName:game];
         [alert addAction:[UIAlertAction actionWithTitle:game
                                                  style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * _Nonnull action) {
             [self.gamePickerButton setTitle:game forState:UIControlStateNormal];
             self.selectedGame = game;
+            self.selectedGameIcon = icon;
             self.customGameField.text = @"";
         }]];
     }
@@ -327,16 +341,16 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)importanceTapped:(UIButton *)button {
+- (void)srm_importanceTapped:(UIButton *)button {
     self.selectedImportance = (SRImportanceLevel)button.tag;
-    [self updateImportanceButtons];
+    [self srm_updateImportanceButtons];
 }
 
-- (void)closeTapped {
+- (void)srm_closeTapped {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)saveTapped {
+- (void)srm_saveTapped {
     // Validate
     NSString *gameName = self.customGameField.text.length > 0 ? self.customGameField.text : self.selectedGame;
     if (gameName.length == 0 || self.titleField.text.length == 0 || self.contentTextView.text.length == 0) {
@@ -350,6 +364,7 @@
     
     // Update strategy
     self.strategy.gameName = gameName;
+    self.strategy.gameIcon = self.selectedGameIcon.length > 0 ? self.selectedGameIcon : [SRConstants iconForGameName:gameName];
     self.strategy.title = self.titleField.text;
     self.strategy.content = self.contentTextView.text;
     self.strategy.importance = self.selectedImportance;
@@ -361,7 +376,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)deleteTapped {
+- (void)srm_deleteTapped {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Strategy"
                                                                    message:@"Are you sure you want to delete this strategy?"
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -385,7 +400,7 @@
 
 #pragma mark - Helpers
 
-- (UIImage *)imageWithSystemName:(NSString *)systemName {
+- (UIImage *)srm_imageWithSystemName:(NSString *)systemName {
     if (@available(iOS 13.0, *)) {
         return [UIImage systemImageNamed:systemName];
     }

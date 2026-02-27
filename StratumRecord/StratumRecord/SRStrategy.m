@@ -24,6 +24,7 @@
     if (self = [super init]) {
         _strategyId = dict[@"strategyId"] ?: [[NSUUID UUID] UUIDString];
         _gameName = dict[@"gameName"];
+        _gameIcon = dict[@"gameIcon"];
         _title = dict[@"title"];
         _content = dict[@"content"];
         _importance = [dict[@"importance"] integerValue];
@@ -42,6 +43,7 @@
     return @{
         @"strategyId": self.strategyId ?: @"",
         @"gameName": self.gameName ?: @"",
+        @"gameIcon": self.gameIcon ?: @"",
         @"title": self.title ?: @"",
         @"content": self.content ?: @"",
         @"importance": @(self.importance),
@@ -60,6 +62,7 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
     [coder encodeObject:self.strategyId forKey:@"strategyId"];
     [coder encodeObject:self.gameName forKey:@"gameName"];
+    [coder encodeObject:self.gameIcon forKey:@"gameIcon"];
     [coder encodeObject:self.title forKey:@"title"];
     [coder encodeObject:self.content forKey:@"content"];
     [coder encodeInteger:self.importance forKey:@"importance"];
@@ -76,6 +79,7 @@
     if (self = [super init]) {
         _strategyId = [coder decodeObjectForKey:@"strategyId"];
         _gameName = [coder decodeObjectForKey:@"gameName"];
+        _gameIcon = [coder decodeObjectForKey:@"gameIcon"];
         _title = [coder decodeObjectForKey:@"title"];
         _content = [coder decodeObjectForKey:@"content"];
         _importance = [coder decodeIntegerForKey:@"importance"];

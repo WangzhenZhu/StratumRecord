@@ -14,25 +14,25 @@
 + (instancetype)sharedManager;
 
 // My Strategies
-- (NSArray<SRStrategy *> *)loadMyStrategies;
-- (void)saveMyStrategies:(NSArray<SRStrategy *> *)strategies;
-- (void)addMyStrategy:(SRStrategy *)strategy;
-- (void)updateMyStrategy:(SRStrategy *)strategy;
-- (void)deleteMyStrategy:(NSString *)strategyId;
+- (NSArray<SRStrategy *> *)srm_loadMyStrategies;
+- (void)srm_saveMyStrategies:(NSArray<SRStrategy *> *)strategies;
+- (void)srm_addMyStrategy:(SRStrategy *)strategy;
+- (void)srm_updateMyStrategy:(SRStrategy *)strategy;
+- (void)srm_deleteMyStrategy:(NSString *)strategyId;
 
 // Plaza Strategies
-- (NSArray<SRStrategy *> *)loadPlazaStrategies;
-- (void)savePlazaStrategies:(NSArray<SRStrategy *> *)strategies;
-- (void)publishStrategy:(SRStrategy *)strategy;
-- (void)updatePlazaStrategy:(SRStrategy *)strategy;
+- (NSArray<SRStrategy *> *)srm_loadPlazaStrategies;
+- (void)srm_savePlazaStrategies:(NSArray<SRStrategy *> *)strategies;
+- (void)srm_publishStrategy:(SRStrategy *)strategy;
+- (void)srm_updatePlazaStrategy:(SRStrategy *)strategy;
 
 // Comments
-- (NSArray<SRComment *> *)loadCommentsForStrategy:(NSString *)strategyId;
-- (void)addComment:(SRComment *)comment;
-- (NSArray<SRComment *> *)loadAllComments;
-- (void)saveComments:(NSArray<SRComment *> *)comments;
+- (NSArray<SRComment *> *)srm_loadCommentsForStrategy:(NSString *)strategyId;
+- (void)srm_addComment:(SRComment *)comment;
+- (NSArray<SRComment *> *)srm_loadAllComments;
+- (void)srm_saveComments:(NSArray<SRComment *> *)comments;
 
 // Initialize mock data
-- (void)initializeMockDataIfNeeded;
+- (void)srm_initializeMockDataIfNeeded;
 
 @end

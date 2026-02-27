@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  StratumRecord
+
+  Created by po on 2026/2/27.
+  
+*/
+"CFBundleDisplayName" = "租号玩-游戏策略宝藏屋";
+"NSPhotoLibraryUsageDescription" = "我们需要获取相机权限,来自定义头像";
+"NSPhotoLibraryAddUsageDescription" = "我们需要获取相册权限,来自定义头像";
+"NSCameraUsageDescription" = "我们需要获取相机权限,来自定义头像";

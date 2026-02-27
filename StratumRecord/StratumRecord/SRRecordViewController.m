@@ -39,17 +39,17 @@
     [self.view addSubview:backgroundImageView];
     [self.view sendSubviewToBack:backgroundImageView];
     
-    [self setupUI];
-    [self loadData];
+    [self srm_setupUI];
+    [self srm_loadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self loadData];
+    [self srm_loadData];
     self.navigationController.navigationBar.hidden = YES;
 }
 
-- (void)setupUI {
+- (void)srm_setupUI {
     // Header view
     self.headerView = [[UIView alloc] init];
     self.headerView.backgroundColor = SR_COLOR_PRIMARY;
@@ -87,12 +87,13 @@
     self.addButton.layer.shadowOpacity = 0.3;
     [self.addButton setTitle:@"+" forState:UIControlStateNormal];
     self.addButton.titleLabel.font = [UIFont systemFontOfSize:32 weight:UIFontWeightLight];
-    [self.addButton addTarget:self action:@selector(addButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.addButton addTarget:self action:@selector(srm_addButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.addButton];
     
     // Layout
     [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self.view);
+        make.top.equalTo(self.view);
+        make.left.right.equalTo(self.view);
         make.height.mas_equalTo(200);
     }];
     
@@ -118,18 +119,18 @@
     }];
 }
 
-- (void)loadData {
-    self.strategies = [[[SRDataManager sharedManager] loadMyStrategies] mutableCopy];
+- (void)srm_loadData {
+    self.strategies = [[[SRDataManager sharedManager] srm_loadMyStrategies] mutableCopy];
     [self.tableView reloadData];
 }
 
-- (void)addButtonTapped {
+- (void)srm_addButtonTapped {
     SREditStrategyViewController *editVC = [[SREditStrategyViewController alloc] initWithStrategy:nil];
     editVC.isPublishMode = NO;
     __weak typeof(self) weakSelf = self;
     editVC.saveCompletion = ^(SRStrategy *strategy) {
-        [[SRDataManager sharedManager] addMyStrategy:strategy];
-        [weakSelf loadData];
+        [[SRDataManager sharedManager] srm_addMyStrategy:strategy];
+        [weakSelf srm_loadData];
     };
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editVC];
     nav.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -144,7 +145,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SRStrategyCell *cell = [tableView dequeueReusableCellWithIdentifier:@"StrategyCell" forIndexPath:indexPath];
-    [cell configureWithStrategy:self.strategies[indexPath.row]];
+    [cell srm_configureWithStrategy:self.strategies[indexPath.row]];
     return cell;
 }
 
@@ -166,12 +167,12 @@
     editVC.isPublishMode = NO;
     __weak typeof(self) weakSelf = self;
     editVC.saveCompletion = ^(SRStrategy *updatedStrategy) {
-        [[SRDataManager sharedManager] updateMyStrategy:updatedStrategy];
-        [weakSelf loadData];
+        [[SRDataManager sharedManager] srm_updateMyStrategy:updatedStrategy];
+        [weakSelf srm_loadData];
     };
     editVC.deleteCompletion = ^(NSString *strategyId) {
-        [[SRDataManager sharedManager] deleteMyStrategy:strategyId];
-        [weakSelf loadData];
+        [[SRDataManager sharedManager] srm_deleteMyStrategy:strategyId];
+        [weakSelf srm_loadData];
     };
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editVC];

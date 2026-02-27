@@ -11,6 +11,7 @@
 
 @property (nonatomic, strong) UIView *cardView;
 @property (nonatomic, strong) UIView *gameTagView;
+@property (nonatomic, strong) UIImageView *gameIconImageView;
 @property (nonatomic, strong) UILabel *gameLabel;
 @property (nonatomic, strong) UILabel *importanceLabel;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -46,6 +47,12 @@
     self.gameTagView = [[UIView alloc] init];
     self.gameTagView.layer.cornerRadius = 4;
     [self.cardView addSubview:self.gameTagView];
+    
+    // Game icon
+    self.gameIconImageView = [[UIImageView alloc] init];
+    self.gameIconImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.gameIconImageView.clipsToBounds = YES;
+    [self.gameTagView addSubview:self.gameIconImageView];
     
     self.gameLabel = [[UILabel alloc] init];
     self.gameLabel.font = [UIFont boldSystemFontOfSize:12];
@@ -92,8 +99,14 @@
         make.height.mas_equalTo(24);
     }];
     
+    [self.gameIconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.gameTagView).offset(6);
+        make.centerY.equalTo(self.gameTagView);
+        make.width.height.mas_equalTo(20);
+    }];
+    
     [self.gameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.gameTagView).offset(10);
+        make.left.equalTo(self.gameIconImageView.mas_right).offset(6);
         make.right.equalTo(self.gameTagView).offset(-10);
         make.centerY.equalTo(self.gameTagView);
     }];
@@ -121,10 +134,13 @@
     }];
 }
 
-- (void)configureWithStrategy:(SRStrategy *)strategy {
-    // Game tag
+- (void)srm_configureWithStrategy:(SRStrategy *)strategy {
+    // Game tag with icon
     UIColor *borderColor = [SRConstants borderColorForImportance:strategy.importance];
     self.gameTagView.backgroundColor = [SRConstants colorForImportance:strategy.importance];
+    
+    NSString *iconName = strategy.gameIcon.length > 0 ? strategy.gameIcon : [SRConstants iconForGameName:strategy.gameName];
+    self.gameIconImageView.image = [UIImage imageNamed:iconName];
     self.gameLabel.text = strategy.gameName;
     
     // Apply border to card based on importance

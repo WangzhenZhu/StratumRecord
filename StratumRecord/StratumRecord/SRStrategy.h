@@ -17,6 +17,7 @@ typedef NS_ENUM(NSInteger, SRImportanceLevel) {
 
 @property (nonatomic, copy) NSString *strategyId;
 @property (nonatomic, copy) NSString *gameName;
+@property (nonatomic, copy) NSString *gameIcon; // Game icon emoji
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *content;
 @property (nonatomic, assign) SRImportanceLevel importance;

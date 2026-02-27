@@ -38,4 +38,13 @@
     return [color colorWithAlphaComponent:0.3];
 }
 
++ (NSString *)iconForGameName:(NSString *)gameName {
+    NSDictionary *icons = SR_GAME_ICONS;
+    return icons[gameName] ?: @"game_icon1"; // Default icon
+}
+
++ (NSArray<NSString *> *)availableGameIcons {
+    return @[@"game_icon1", @"game_icon2", @"game_icon3", @"game_icon4", @"game_icon5", @"game_icon6", @"game_icon7", @"game_icon8"];
+}
+
 @end

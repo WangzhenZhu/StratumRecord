@@ -12,6 +12,7 @@
 		1FAD9EDE92BB7CE585909749 /* SREditStrategyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D7E0B6589F3B5E53F35F543 /* SREditStrategyViewController.m */; };
 		27C8DE6D653F62412813E1FB /* SRRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0EC52BD3D31CEB4D3910EEA /* SRRecordViewController.m */; };
 		35F7E0307F5780A531AE8304 /* SRStrategyDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0223BCEAFA92A224E2BCC929 /* SRStrategyDetailViewController.m */; };
+		A4F9D1C3E8B44710A12C3401 /* SRFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F9D1C3E8B44710A12C3403 /* SRFeedbackViewController.m */; };
 		5D46B8EFE45334518FF7C963 /* libPods-StratumRecord.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D921DC295D0A82E6E871E758 /* libPods-StratumRecord.a */; };
 		618BE970E22B0B7C653B94B3 /* SRSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8436008897285373AC19ECF6 /* SRSettingsViewController.m */; };
 		728EC68849C7E93EA228D06D /* SRTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B77C78182A1D0E24CE0AF68D /* SRTabBarController.m */; };
@@ -26,6 +27,8 @@
 		0223BCEAFA92A224E2BCC929 /* SRStrategyDetailViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRStrategyDetailViewController.m; path = StratumRecord/SRStrategyDetailViewController.m; sourceTree = "<group>"; };
 		026AE3FE333CCA9BCAD4CC0F /* SRPlazaCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRPlazaCell.h; path = StratumRecord/SRPlazaCell.h; sourceTree = "<group>"; };
 		04C97FB22F4DE04900560F9E /* StratumRecord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StratumRecord.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4F9D1C3E8B44710A12C3402 /* SRFeedbackViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRFeedbackViewController.h; path = StratumRecord/SRFeedbackViewController.h; sourceTree = "<group>"; };
+		A4F9D1C3E8B44710A12C3403 /* SRFeedbackViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRFeedbackViewController.m; path = StratumRecord/SRFeedbackViewController.m; sourceTree = "<group>"; };
 		2CF0C66A85E1D69271C76661 /* SRTabBarController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRTabBarController.h; path = StratumRecord/SRTabBarController.h; sourceTree = "<group>"; };
 		2D61084F5E1C402BC9D35B05 /* SRSettingsViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRSettingsViewController.h; path = StratumRecord/SRSettingsViewController.h; sourceTree = "<group>"; };
 		38C042F6AEADA02B2D603B1E /* SRStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRStrategy.h; path = StratumRecord/SRStrategy.h; sourceTree = "<group>"; };
@@ -141,6 +144,8 @@
 				AAECC9A1D54221A0D10FE8AD /* SRPlazaViewController.m */,
 				2D61084F5E1C402BC9D35B05 /* SRSettingsViewController.h */,
 				8436008897285373AC19ECF6 /* SRSettingsViewController.m */,
+				A4F9D1C3E8B44710A12C3402 /* SRFeedbackViewController.h */,
+				A4F9D1C3E8B44710A12C3403 /* SRFeedbackViewController.m */,
 				ABA9C8C0F972DE12FF8D74F1 /* SRStrategyCell.h */,
 				FB873CDB9C6EC8A76D22922A /* SRStrategyCell.m */,
 				026AE3FE333CCA9BCAD4CC0F /* SRPlazaCell.h */,
@@ -164,6 +169,7 @@
 				04C97FAE2F4DE04800560F9E /* Sources */,
 				04C97FAF2F4DE04800560F9E /* Frameworks */,
 				04C97FB02F4DE04900560F9E /* Resources */,
+				7D884E503E111C4B84974481 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -197,6 +203,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 04C97FA92F4DE04800560F9E;
 			minimizedProjectReferenceProxies = 1;
@@ -221,6 +228,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		7D884E503E111C4B84974481 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-StratumRecord/Pods-StratumRecord-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-StratumRecord/Pods-StratumRecord-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StratumRecord/Pods-StratumRecord-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9E8519B03E8E503F230A6DB5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -258,6 +286,7 @@
 				27C8DE6D653F62412813E1FB /* SRRecordViewController.m in Sources */,
 				72AF8D9FF67A2345CE41CE21 /* SRPlazaViewController.m in Sources */,
 				618BE970E22B0B7C653B94B3 /* SRSettingsViewController.m in Sources */,
+				A4F9D1C3E8B44710A12C3401 /* SRFeedbackViewController.m in Sources */,
 				CCFB3E219776F6DEA3B94F58 /* SRStrategyCell.m in Sources */,
 				1BE22DC6DCBFFFA79283FC2A /* SRPlazaCell.m in Sources */,
 				1FAD9EDE92BB7CE585909749 /* SREditStrategyViewController.m in Sources */,
@@ -276,13 +305,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StratumRecord/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -291,8 +322,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.stratum.record.StratumRecord;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -304,13 +339,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StratumRecord/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -319,8 +356,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.stratum.record.StratumRecord;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -329,6 +370,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -390,6 +432,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
