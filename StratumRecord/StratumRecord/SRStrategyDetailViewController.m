@@ -7,6 +7,9 @@
 #import "SRConstants.h"
 #import "SRDataManager.h"
 #import "SRComment.h"
+#import "SRReportViewController.h"
+#import "SRUserManager.h"
+#import "SRAnalyticsManager.h"
 #import <Masonry/Masonry.h>
 
 @interface SRStrategyDetailViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
@@ -18,14 +21,20 @@
 @property (nonatomic, strong) UIView *contentView;
 
 @property (nonatomic, strong) UIView *headerCard;
-@property (nonatomic, strong) UIView *avatarView;
+@property (nonatomic, strong) UIImageView *avatarImageView;
 @property (nonatomic, strong) UILabel *authorLabel;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UIView *gameTagView;
+@property (nonatomic, strong) UIImageView *gameIconImageView;
 @property (nonatomic, strong) UILabel *gameLabel;
 @property (nonatomic, strong) UILabel *importanceLabel;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *contentLabel;
+
+@property (nonatomic, strong) UIView *actionBar;
+@property (nonatomic, strong) UIButton *likeButton;
+@property (nonatomic, strong) UIButton *commentButton;
+@property (nonatomic, strong) UIButton *shareButton;
 
 @property (nonatomic, strong) UITableView *commentsTableView;
 @property (nonatomic, strong) UIView *commentInputContainer;
@@ -58,7 +67,7 @@
     [self.view addSubview:backgroundImageView];
     [self.view sendSubviewToBack:backgroundImageView];
     
-    UIView *coverView = [[UIView alloc] init];
+    UIView *coverView = [[UIView alloc] initWithFrame:self.view.bounds];
     coverView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
     [self.view addSubview:coverView];
     [self srm_setupNavigationBar];
@@ -79,6 +88,16 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = NO;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"StrategyDetail_Page"];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[SRAnalyticsManager sharedManager] trackPageViewEnd:@"StrategyDetail_Page"];
 }
 
 - (void)dealloc {
@@ -111,10 +130,12 @@
     [self.contentView addSubview:self.headerCard];
     
     // Avatar
-    self.avatarView = [[UIView alloc] init];
-    self.avatarView.backgroundColor = SR_COLOR_PRIMARY;
-    self.avatarView.layer.cornerRadius = 20;
-    [self.headerCard addSubview:self.avatarView];
+    self.avatarImageView = [[UIImageView alloc] init];
+    self.avatarImageView.image = [UIImage imageNamed:self.strategy.authorAvatar];
+    self.avatarImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.avatarImageView.clipsToBounds = YES;
+    self.avatarImageView.layer.cornerRadius = 20;
+    [self.headerCard addSubview:self.avatarImageView];
     
     self.authorLabel = [[UILabel alloc] init];
     self.authorLabel.font = [UIFont boldSystemFontOfSize:15];
@@ -135,6 +156,14 @@
     self.gameTagView.layer.cornerRadius = 4;
     self.gameTagView.backgroundColor = [SRConstants colorForImportance:self.strategy.importance];
     [self.headerCard addSubview:self.gameTagView];
+    
+    // Game icon
+    self.gameIconImageView = [[UIImageView alloc] init];
+    self.gameIconImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.gameIconImageView.clipsToBounds = YES;
+    NSString *iconName = self.strategy.gameIcon.length > 0 ? self.strategy.gameIcon : [SRConstants iconForGameName:self.strategy.gameName];
+    self.gameIconImageView.image = [UIImage imageNamed:iconName];
+    [self.gameTagView addSubview:self.gameIconImageView];
     
     self.gameLabel = [[UILabel alloc] init];
     self.gameLabel.font = [UIFont boldSystemFontOfSize:11];
@@ -170,6 +199,38 @@
     self.contentLabel.numberOfLines = 0;
     self.contentLabel.text = self.strategy.content;
     [self.headerCard addSubview:self.contentLabel];
+    
+    // Action bar
+    self.actionBar = [[UIView alloc] init];
+    self.actionBar.backgroundColor = [UIColor clearColor];
+    [self.headerCard addSubview:self.actionBar];
+    
+    self.likeButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    NSString *likeIconName = self.strategy.isLiked ? @"like_s_icon" : @"like_icon";
+    [self.likeButton setImage:[UIImage imageNamed:likeIconName] forState:UIControlStateNormal];
+    [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.strategy.likeCount] forState:UIControlStateNormal];
+    self.likeButton.titleLabel.font = [UIFont systemFontOfSize:14];
+    self.likeButton.tintColor = SR_COLOR_TEXT_SECONDARY;
+    self.likeButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 8);
+    self.likeButton.titleEdgeInsets = UIEdgeInsetsMake(0, 8, 0, -8);
+    [self.likeButton addTarget:self action:@selector(srm_likeTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.actionBar addSubview:self.likeButton];
+    
+    self.commentButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.commentButton setImage:[UIImage imageNamed:@"comment_icon"] forState:UIControlStateNormal];
+    [self.commentButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.strategy.commentCount] forState:UIControlStateNormal];
+    self.commentButton.titleLabel.font = [UIFont systemFontOfSize:14];
+    self.commentButton.tintColor = SR_COLOR_TEXT_SECONDARY;
+    self.commentButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 8);
+    self.commentButton.titleEdgeInsets = UIEdgeInsetsMake(0, 8, 0, -8);
+    [self.commentButton addTarget:self action:@selector(srm_focusCommentInput) forControlEvents:UIControlEventTouchUpInside];
+    [self.actionBar addSubview:self.commentButton];
+    
+    self.shareButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.shareButton setImage:[UIImage systemImageNamed:@"square.and.arrow.down"] forState:UIControlStateNormal];
+    self.shareButton.tintColor = SR_COLOR_TEXT_SECONDARY;
+    [self.shareButton addTarget:self action:@selector(srm_shareTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.actionBar addSubview:self.shareButton];
     
     // Comments section
     UILabel *commentsTitle = [[UILabel alloc] init];
@@ -229,14 +290,14 @@
         make.top.equalTo(self.contentView).offset(16);
     }];
     
-    [self.avatarView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.avatarImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(self.headerCard).offset(16);
         make.width.height.mas_equalTo(40);
     }];
     
     [self.authorLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.avatarView.mas_right).offset(12);
-        make.top.equalTo(self.avatarView).offset(4);
+        make.left.equalTo(self.avatarImageView.mas_right).offset(12);
+        make.top.equalTo(self.avatarImageView).offset(4);
     }];
     
     [self.dateLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -246,12 +307,18 @@
     
     [self.gameTagView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.headerCard).offset(16);
-        make.top.equalTo(self.avatarView.mas_bottom).offset(16);
+        make.top.equalTo(self.avatarImageView.mas_bottom).offset(16);
         make.height.mas_equalTo(22);
     }];
     
+    [self.gameIconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.gameTagView).offset(6);
+        make.centerY.equalTo(self.gameTagView);
+        make.width.height.mas_equalTo(16);
+    }];
+    
     [self.gameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.gameTagView).offset(8);
+        make.left.equalTo(self.gameIconImageView.mas_right).offset(4);
         make.right.equalTo(self.gameTagView).offset(-8);
         make.centerY.equalTo(self.gameTagView);
     }];
@@ -271,7 +338,32 @@
     [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.titleLabel);
         make.top.equalTo(self.titleLabel.mas_bottom).offset(12);
+    }];
+    
+    [self.actionBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.headerCard).inset(16);
+        make.top.equalTo(self.contentLabel.mas_bottom).offset(16);
+        make.height.mas_equalTo(36);
         make.bottom.equalTo(self.headerCard).offset(-16);
+    }];
+    
+    [self.likeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.actionBar);
+        make.centerY.equalTo(self.actionBar);
+        make.height.mas_equalTo(36);
+    }];
+    
+    [self.commentButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.likeButton.mas_right).offset(20);
+        make.centerY.equalTo(self.actionBar);
+        make.height.mas_equalTo(36);
+    }];
+    
+    [self.shareButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.actionBar);
+        make.centerY.equalTo(self.actionBar);
+        make.height.mas_equalTo(36);
+        make.width.mas_equalTo(36);
     }];
     
     [commentsTitle mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -287,21 +379,20 @@
     }];
     
     [self.commentInputContainer mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.bottom.equalTo(self.view.mas_safeAreaLayoutGuideBottom);
-        make.height.mas_equalTo(60);
+        make.left.right.bottom.equalTo(self.view);
     }];
     
     [self.commentTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.commentInputContainer).offset(16);
-        make.centerY.equalTo(self.commentInputContainer);
+        make.top.equalTo(self.commentInputContainer).offset(10);
+        make.bottom.equalTo(self.commentInputContainer.mas_safeAreaLayoutGuideBottom).offset(-10);
         make.height.mas_equalTo(40);
     }];
     
     [self.sendButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.commentTextField.mas_right).offset(12);
         make.right.equalTo(self.commentInputContainer).offset(-16);
-        make.centerY.equalTo(self.commentInputContainer);
+        make.centerY.equalTo(self.commentTextField);
         make.width.mas_equalTo(50);
     }];
 }
@@ -332,10 +423,10 @@
         [self srm_reportStrategy];
     }]];
     
-    [alert addAction:[UIAlertAction actionWithTitle:@"Block User"
+    [alert addAction:[UIAlertAction actionWithTitle:@"Hide Strategy"
                                              style:UIAlertActionStyleDestructive
                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self srm_blockUser];
+        [self srm_hideStrategy];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
@@ -347,19 +438,61 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)srm_reportStrategy {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Report Submitted"
-                                                                   message:@"Thank you for your report."
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
+- (void)srm_likeTapped {
+    self.strategy.isLiked = !self.strategy.isLiked;
+    self.strategy.likeCount += self.strategy.isLiked ? 1 : -1;
+    [[SRDataManager sharedManager] srm_updatePlazaStrategy:self.strategy];
+    
+    // Update user's total likes count
+    SRUser *currentUser = [[SRUserManager sharedManager] currentUser];
+    if (currentUser) {
+        currentUser.likesCount += self.strategy.isLiked ? 1 : -1;
+        [[SRUserManager sharedManager] saveCurrentUser];
+    }
+    
+    // 更新UI
+    NSString *likeIconName = self.strategy.isLiked ? @"like_s_icon" : @"like_icon";
+    [self.likeButton setImage:[UIImage imageNamed:likeIconName] forState:UIControlStateNormal];
+    [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.strategy.likeCount] forState:UIControlStateNormal];
 }
 
-- (void)srm_blockUser {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"User Blocked"
-                                                                   message:[NSString stringWithFormat:@"You will no longer see posts from %@", self.strategy.authorName]
+- (void)srm_focusCommentInput {
+    [self.commentTextField becomeFirstResponder];
+}
+
+- (void)srm_shareTapped {
+    // 显示确认对话框
+    UIAlertController *confirmAlert = [UIAlertController alertControllerWithTitle:@"Save Strategy"
+                                                                           message:@"Do you want to save this strategy to your list?"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    
+    [confirmAlert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    
+    [confirmAlert addAction:[UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[SRDataManager sharedManager] srm_addMyStrategy:self.strategy];
+        
+        UIAlertController *successAlert = [UIAlertController alertControllerWithTitle:@"Saved"
+                                                                               message:@"Strategy saved to your list successfully!"
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+        [successAlert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:successAlert animated:YES completion:nil];
+    }]];
+    
+    [self presentViewController:confirmAlert animated:YES completion:nil];
+}
+
+- (void)srm_reportStrategy {
+    SRReportViewController *reportVC = [[SRReportViewController alloc] initWithStrategy:self.strategy];
+    [self.navigationController pushViewController:reportVC animated:YES];
+}
+
+- (void)srm_hideStrategy {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Strategy Hidden"
+                                                                   message:@"This strategy has been hidden from your feed."
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }]];
     [self presentViewController:alert animated:YES completion:nil];
 }
 

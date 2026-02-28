@@ -8,9 +8,12 @@
 #import "SRUserManager.h"
 #import "SRTabBarController.h"
 #import "SRFeedbackViewController.h"
+#import "SREditProfileViewController.h"
+#import "SRAnalyticsManager.h"
 #import <LEEAlert/LEEAlert.h>
 #import <Masonry/Masonry.h>
 #import <WebKit/WebKit.h>
+#import <StoreKit/StoreKit.h>
 
 @interface SRSettingsViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -21,11 +24,11 @@
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *avatarContainerView;
 @property (nonatomic, strong) UIView *avatarView;
+@property (nonatomic, strong) UIImageView *avatarImageView;
 @property (nonatomic, strong) UILabel *levelBadgeLabel;
 @property (nonatomic, strong) UILabel *usernameLabel;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UILabel *bioLabel;
-@property (nonatomic, strong) UIButton *editBioButton;
 @property (nonatomic, strong) UILabel *levelLabel;
 @property (nonatomic, strong) UILabel *expLabel;
 @property (nonatomic, strong) UIView *progressBarBG;
@@ -41,6 +44,7 @@
 @property (nonatomic, strong) UIView *badgesSection;
 @property (nonatomic, strong) UIView *gamesSection;
 @property (nonatomic, strong) UIView *accountSection;
+@property (nonatomic, strong) UILabel *memberLevelLabel;
 @property (nonatomic, strong) UITableView *settingsTable;
 
 @property (nonatomic, strong) NSArray<NSDictionary *> *settingsItems;
@@ -76,6 +80,27 @@
         [[SRUserManager sharedManager] updateUserStats];
         [self srm_updateUserInfo];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    // 神策页面埋点
+    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"Settings_Page"];
+    
+    // 设置用户属性
+    SRUser *user = [[SRUserManager sharedManager] currentUser];
+    if (user) {
+        [[SRAnalyticsManager sharedManager] login:user.userId];
+        [[SRAnalyticsManager sharedManager] setUserProperties:@{
+            @"user_level": @(user.level),
+            @"user_email": user.email ?: @""
+        }];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[SRAnalyticsManager sharedManager] trackPageViewEnd:@"Settings_Page"];
 }
 
 - (void)srm_setupData {
@@ -138,7 +163,15 @@
     self.avatarView.layer.cornerRadius = 40;
     self.avatarView.layer.borderWidth = 3;
     self.avatarView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.avatarView.clipsToBounds = YES;
     [self.avatarContainerView addSubview:self.avatarView];
+    
+    // Avatar ImageView (for uploaded photos)
+    self.avatarImageView = [[UIImageView alloc] init];
+    self.avatarImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.avatarImageView.clipsToBounds = YES;
+    self.avatarImageView.hidden = YES;
+    [self.avatarView addSubview:self.avatarImageView];
     
     // Avatar image/emoji
     UILabel *avatarEmoji = [[UILabel alloc] init];
@@ -168,8 +201,13 @@
     [self.headerView addSubview:self.usernameLabel];
     
     self.editButton = [UIButton buttonWithType:UIButtonTypeSystem];
-//    [self.editButton setImage:[self imageWithSystemName:@"pencil"] forState:UIControlStateNormal];
-    self.editButton.tintColor = [UIColor whiteColor];
+    [self.editButton setTitle:@"Edit" forState:UIControlStateNormal];
+    self.editButton.titleLabel.font = [UIFont systemFontOfSize:14];
+    [self.editButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    self.editButton.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2];
+    self.editButton.layer.cornerRadius = 4;
+    self.editButton.contentEdgeInsets = UIEdgeInsetsMake(4, 8, 4, 8);
+    [self.editButton addTarget:self action:@selector(srm_editUserInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:self.editButton];
     
     // Bio
@@ -179,13 +217,6 @@
     self.bioLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
     self.bioLabel.numberOfLines = 2;
     [self.headerView addSubview:self.bioLabel];
-    
-    // Edit Bio button
-    self.editBioButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.editBioButton setTitle:@"Edit Bio" forState:UIControlStateNormal];
-    self.editBioButton.titleLabel.font = [UIFont systemFontOfSize:13];
-    [self.editBioButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.9] forState:UIControlStateNormal];
-    [self.headerView addSubview:self.editBioButton];
     
     // Level and EXP
     self.levelLabel = [[UILabel alloc] init];
@@ -395,6 +426,9 @@
     UIView *levelRow = [self srm_createInfoRowWithIcon:@"crown" label:@"Member Level" value:@"Lv.42 Elite" valueColor:[UIColor orangeColor]];
     [self.accountSection addSubview:levelRow];
     
+    // Store reference to member level label (it's the last subview - the value label)
+    self.memberLevelLabel = [levelRow.subviews lastObject];
+    
     [accountTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.accountSection).offset(20);
         make.top.equalTo(self.accountSection).offset(16);
@@ -462,7 +496,11 @@
         make.edges.equalTo(self.avatarContainerView);
     }];
     
-    [[self.avatarView.subviews firstObject] mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.avatarImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.avatarView);
+    }];
+    
+    [[self.avatarView.subviews lastObject] mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.avatarView);
     }];
     
@@ -477,20 +515,15 @@
     }];
     
     [self.editButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.usernameLabel.mas_right).offset(8);
+        make.left.equalTo(self.usernameLabel.mas_right).offset(12);
         make.centerY.equalTo(self.usernameLabel);
-        make.width.height.mas_equalTo(24);
+        make.height.mas_equalTo(28);
     }];
     
     [self.bioLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.usernameLabel);
         make.right.equalTo(self.headerView).offset(-20);
         make.top.equalTo(self.usernameLabel.mas_bottom).offset(6);
-    }];
-    
-    [self.editBioButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.usernameLabel);
-        make.top.equalTo(self.bioLabel.mas_bottom).offset(6);
     }];
     
     [self.levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -825,20 +858,30 @@
 }
 
 - (void)srm_rateApp {
-    [LEEAlert alert].config
-    .LeeTitle(@"Rate StratumRecord")
-    .LeeContent(@"If you enjoy using StratumRecord, please take a moment to rate it in the App Store!")
-    .LeeAction(@"Rate Now", ^{
+    // 使用系统原生的评分功能 (iOS 10.3+)
+    if (@available(iOS 10.3, *)) {
+        [SKStoreReviewController requestReview];
+    } else {
+        // iOS 10.3 以下，显示提示
         [LEEAlert alert].config
-        .LeeTitle(@"Thank You")
-        .LeeContent(@"Thank you for your support!")
-        .LeeCancelAction(@"OK", ^{
+        .LeeTitle(@"Rate StratumRecord")
+        .LeeContent(@"If you enjoy using StratumRecord, please take a moment to rate it in the App Store!")
+        .LeeAction(@"Rate Now", ^{
+            // 这里可以跳转到 App Store 页面
+             NSString *appStoreURL = @"itms-apps://itunes.apple.com/app/idXXXXXXXXXX";
+             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:appStoreURL]];
+            
+            [LEEAlert alert].config
+            .LeeTitle(@"Thank You")
+            .LeeContent(@"Thank you for your support!")
+            .LeeCancelAction(@"OK", ^{
+            })
+            .LeeShow();
+        })
+        .LeeCancelAction(@"Later", ^{
         })
         .LeeShow();
-    })
-    .LeeCancelAction(@"Later", ^{
-    })
-    .LeeShow();
+    }
 }
 
 - (void)srm_deleteAccount {
@@ -852,7 +895,7 @@
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"PLAZA_STRATEGIES"];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"COMMENTS"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
+        [[SRUserManager sharedManager] logout];
         [LEEAlert alert].config
         .LeeTitle(@"Account Deleted")
         .LeeContent(@"Your account has been successfully deleted.")
@@ -896,13 +939,76 @@
     // Update username
     self.usernameLabel.text = user.username;
     
+    // Update avatar (image or emoji)
+    if (user.avatarImageBase64.length > 0) {
+        NSData *imageData = [[NSData alloc] initWithBase64EncodedString:user.avatarImageBase64 options:NSDataBase64DecodingIgnoreUnknownCharacters];
+        if (imageData) {
+            UIImage *avatarImage = [UIImage imageWithData:imageData];
+            self.avatarImageView.image = avatarImage;
+            self.avatarImageView.hidden = NO;
+            
+            // Hide emoji label
+            UILabel *avatarEmoji = [self.avatarView.subviews lastObject];
+            if ([avatarEmoji isKindOfClass:[UILabel class]]) {
+                avatarEmoji.hidden = YES;
+            }
+        }
+    } else {
+        self.avatarImageView.hidden = YES;
+        
+        // Show emoji label
+        UILabel *avatarEmoji = [self.avatarView.subviews lastObject];
+        if ([avatarEmoji isKindOfClass:[UILabel class]]) {
+            avatarEmoji.text = user.avatarEmoji ?: @"🎮";
+            avatarEmoji.hidden = NO;
+        }
+    }
+    
+    // Update bio
+    self.bioLabel.text = user.bio ?: @"Hardcore gamer & strategy enthusiast 🎮";
+    
     // Update level badge
     self.levelBadgeLabel.text = [NSString stringWithFormat:@"%ld", (long)user.level];
+    
+    // Update level label
+    self.levelLabel.text = [NSString stringWithFormat:@"Lv.%ld", (long)user.level];
+    
+    // Update experience
+    self.expLabel.text = [NSString stringWithFormat:@"%ld / %ld EXP", (long)user.currentExp, (long)user.maxExp];
+    
+    // Update progress bar
+    CGFloat progress = user.maxExp > 0 ? (CGFloat)user.currentExp / (CGFloat)user.maxExp : 0.0;
+    progress = MAX(0.0, MIN(1.0, progress)); // Clamp between 0 and 1
+    [self.progressBarFill mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.bottom.equalTo(self.progressBarBG);
+        make.width.equalTo(self.progressBarBG).multipliedBy(progress);
+    }];
     
     // Update stats
     self.strategiesLabel.text = [NSString stringWithFormat:@"%ld", (long)user.strategiesCount];
     self.likesLabel.text = [NSString stringWithFormat:@"%ld", (long)user.likesCount];
     self.commentsLabel.text = [NSString stringWithFormat:@"%ld", (long)user.commentsCount];
+    
+    // Update member level
+    if (self.memberLevelLabel) {
+        self.memberLevelLabel.text = user.memberLevel ?: @"Lv.1 Newbie";
+    }
+}
+
+#pragma mark - Edit User Info
+
+- (void)srm_editUserInfo {
+    SRUser *user = [[SRUserManager sharedManager] currentUser];
+    if (!user) return;
+    
+    SREditProfileViewController *editVC = [[SREditProfileViewController alloc] init];
+    __weak typeof(self) weakSelf = self;
+    editVC.saveCompletion = ^{
+        [weakSelf srm_updateUserInfo];
+    };
+    
+    self.navigationController.navigationBar.hidden = NO;
+    [self.navigationController pushViewController:editVC animated:YES];
 }
 
 @end

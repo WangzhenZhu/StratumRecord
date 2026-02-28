@@ -1,0 +1,1 @@
+../../../SensorsAnalyticsSDK/SensorsAnalyticsSDK/UIRelated/SAUIProperties.h

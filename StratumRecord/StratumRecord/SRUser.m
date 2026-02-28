@@ -13,7 +13,11 @@
         _email = email;
         _username = [email componentsSeparatedByString:@"@"].firstObject;
         _avatarEmoji = @"🎮";
+        _avatarImageBase64 = nil;
+        _bio = @"Hardcore gamer & strategy enthusiast 🎮";
         _level = 1;
+        _currentExp = 0;
+        _maxExp = 1000;
         _strategiesCount = 0;
         _likesCount = 0;
         _commentsCount = 0;
@@ -34,7 +38,11 @@
         _email = [coder decodeObjectForKey:@"email"];
         _username = [coder decodeObjectForKey:@"username"];
         _avatarEmoji = [coder decodeObjectForKey:@"avatarEmoji"];
+        _avatarImageBase64 = [coder decodeObjectForKey:@"avatarImageBase64"];
+        _bio = [coder decodeObjectForKey:@"bio"];
         _level = [coder decodeIntegerForKey:@"level"];
+        _currentExp = [coder decodeIntegerForKey:@"currentExp"];
+        _maxExp = [coder decodeIntegerForKey:@"maxExp"];
         _strategiesCount = [coder decodeIntegerForKey:@"strategiesCount"];
         _likesCount = [coder decodeIntegerForKey:@"likesCount"];
         _commentsCount = [coder decodeIntegerForKey:@"commentsCount"];
@@ -54,7 +62,11 @@
     [coder encodeObject:_email forKey:@"email"];
     [coder encodeObject:_username forKey:@"username"];
     [coder encodeObject:_avatarEmoji forKey:@"avatarEmoji"];
+    [coder encodeObject:_avatarImageBase64 forKey:@"avatarImageBase64"];
+    [coder encodeObject:_bio forKey:@"bio"];
     [coder encodeInteger:_level forKey:@"level"];
+    [coder encodeInteger:_currentExp forKey:@"currentExp"];
+    [coder encodeInteger:_maxExp forKey:@"maxExp"];
     [coder encodeInteger:_strategiesCount forKey:@"strategiesCount"];
     [coder encodeInteger:_likesCount forKey:@"likesCount"];
     [coder encodeInteger:_commentsCount forKey:@"commentsCount"];
@@ -73,7 +85,11 @@
         @"email": self.email ?: @"",
         @"username": self.username ?: @"",
         @"avatarEmoji": self.avatarEmoji ?: @"🎮",
+        @"avatarImageBase64": self.avatarImageBase64 ?: @"",
+        @"bio": self.bio ?: @"",
         @"level": @(self.level),
+        @"currentExp": @(self.currentExp),
+        @"maxExp": @(self.maxExp),
         @"strategiesCount": @(self.strategiesCount),
         @"likesCount": @(self.likesCount),
         @"commentsCount": @(self.commentsCount),
@@ -93,7 +109,12 @@
         _email = dictionary[@"email"];
         _username = dictionary[@"username"];
         _avatarEmoji = dictionary[@"avatarEmoji"];
+        _avatarImageBase64 = dictionary[@"avatarImageBase64"];
+        _bio = dictionary[@"bio"];
         _level = [dictionary[@"level"] integerValue];
+        _currentExp = [dictionary[@"currentExp"] integerValue];
+        _maxExp = [dictionary[@"maxExp"] integerValue];
+        if (_maxExp == 0) _maxExp = 1000;
         _strategiesCount = [dictionary[@"strategiesCount"] integerValue];
         _likesCount = [dictionary[@"likesCount"] integerValue];
         _commentsCount = [dictionary[@"commentsCount"] integerValue];

@@ -9,3 +9,4 @@
 "NSPhotoLibraryUsageDescription" = "我们需要获取相机权限,来自定义头像";
 "NSPhotoLibraryAddUsageDescription" = "我们需要获取相册权限,来自定义头像";
 "NSCameraUsageDescription" = "我们需要获取相机权限,来自定义头像";
+"NSMicrophoneUsageDescription" = "我们需要获取麦克风访问权限";

@@ -67,6 +67,15 @@
 #pragma mark - Plaza Strategies
 
 - (NSArray<SRStrategy *> *)srm_loadPlazaStrategies {
+    NSArray *allStrategies = [self srm_loadAllPlazaStrategiesIncludingUnderReview];
+    // Filter out strategies under review
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isUnderReview == NO"];
+    NSArray *filtered = [allStrategies filteredArrayUsingPredicate:predicate];
+    return filtered ?: @[];
+}
+
+// Private method to load all strategies including those under review
+- (NSArray<SRStrategy *> *)srm_loadAllPlazaStrategiesIncludingUnderReview {
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:SR_KEY_PLAZA_STRATEGIES];
     if (data) {
         NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
@@ -83,16 +92,17 @@
 
 - (void)srm_publishStrategy:(SRStrategy *)strategy {
     strategy.isPublished = YES;
+    strategy.isUnderReview = YES; // Mark as under review (审核中)
     strategy.authorName = @"Me";
     strategy.authorAvatar = @"user_avatar";
     
-    NSMutableArray *plazaStrategies = [[self srm_loadPlazaStrategies] mutableCopy];
+    NSMutableArray *plazaStrategies = [[self srm_loadAllPlazaStrategiesIncludingUnderReview] mutableCopy];
     [plazaStrategies insertObject:strategy atIndex:0];
     [self srm_savePlazaStrategies:plazaStrategies];
 }
 
 - (void)srm_updatePlazaStrategy:(SRStrategy *)strategy {
-    NSMutableArray *strategies = [[self srm_loadPlazaStrategies] mutableCopy];
+    NSMutableArray *strategies = [[self srm_loadAllPlazaStrategiesIncludingUnderReview] mutableCopy];
     for (NSInteger i = 0; i < strategies.count; i++) {
         SRStrategy *s = strategies[i];
         if ([s.strategyId isEqualToString:strategy.strategyId]) {

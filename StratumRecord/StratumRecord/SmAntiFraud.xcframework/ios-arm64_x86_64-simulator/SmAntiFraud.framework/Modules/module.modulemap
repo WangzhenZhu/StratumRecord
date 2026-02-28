@@ -1,0 +1,6 @@
+framework module SmAntiFraud {
+  umbrella header "SmAntiFraud.h"
+
+  export *
+  module * { export * }
+}

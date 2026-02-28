@@ -87,6 +87,9 @@ static NSString * const kSRTestAccountCode = @"123456";
         [[NSUserDefaults standardUserDefaults] setObject:userData forKey:kCurrentUserKey];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kIsLoggedInKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        // Also save to email-based key for persistence
+        [self saveUserByEmail:self.currentUser];
     }
 }
 
@@ -107,19 +110,16 @@ static NSString * const kSRTestAccountCode = @"123456";
     NSArray *myStrategies = [[SRDataManager sharedManager] srm_loadMyStrategies];
     self.currentUser.strategiesCount = myStrategies.count;
     
-    // Calculate total likes and comments
-    NSInteger totalLikes = 0;
+    // Calculate total comments received on user's strategies
     NSInteger totalComments = 0;
     for (id strategy in myStrategies) {
-        if ([strategy respondsToSelector:@selector(likeCount)]) {
-            totalLikes += [[strategy valueForKey:@"likeCount"] integerValue];
-        }
         if ([strategy respondsToSelector:@selector(commentCount)]) {
             totalComments += [[strategy valueForKey:@"commentCount"] integerValue];
         }
     }
     
-    self.currentUser.likesCount = totalLikes;
+    // Note: likesCount is the number of likes user has given, not received
+    // It's manually updated when user likes/unlikes a strategy
     self.currentUser.commentsCount = totalComments;
     
     // Update badges based on stats

@@ -1,0 +1,1 @@
+../../../SensorsAnalyticsSDK/SensorsAnalyticsSDK/Core/Builder/SASessionPropertyPlugin.h

@@ -6,6 +6,7 @@
 #import "SREditStrategyViewController.h"
 #import "SRConstants.h"
 #import "SRDataManager.h"
+#import "SRAnalyticsManager.h"
 #import <Masonry/Masonry.h>
 
 @interface SREditStrategyViewController () <UIPickerViewDelegate, UIPickerViewDataSource, UITextViewDelegate>
@@ -70,6 +71,18 @@
     [self srm_setupNavigationBar];
     [self srm_setupUI];
     [self srm_prefillData];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSString *pageName = self.isPublishMode ? @"PublishStrategy_Page" : @"EditStrategy_Page";
+    [[SRAnalyticsManager sharedManager] trackPageViewBegin:pageName];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    NSString *pageName = self.isPublishMode ? @"PublishStrategy_Page" : @"EditStrategy_Page";
+    [[SRAnalyticsManager sharedManager] trackPageViewEnd:pageName];
 }
 
 - (void)srm_setupNavigationBar {
@@ -373,7 +386,18 @@
         self.saveCompletion(self.strategy);
     }
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    // Show review notice for publish mode
+    if (self.isPublishMode) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Strategy Submitted"
+                                                                       message:@"Your strategy has been submitted successfully. The platform will review it within 24 hours. It will not be displayed in the list until the review is approved."
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }]];
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)srm_deleteTapped {

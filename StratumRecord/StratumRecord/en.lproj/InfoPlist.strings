@@ -9,3 +9,4 @@
 "NSCameraUsageDescription" = "We need to obtain camera permissions to customize profile pictures";
 "NSPhotoLibraryUsageDescription" = "We need to obtain album permissions to customize profile pictures.";
 "NSPhotoLibraryAddUsageDescription" = "We need to obtain album permissions to customize profile pictures.";
+"NSMicrophoneUsageDescription" = "We need to obtain microphone access";

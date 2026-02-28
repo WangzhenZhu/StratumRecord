@@ -9,15 +9,17 @@
 /* Begin PBXBuildFile section */
 		1AEB171BE518B3C5F3376990 /* SRDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E46D453CA47B4A4FDC8A96 /* SRDataManager.m */; };
 		1BE22DC6DCBFFFA79283FC2A /* SRPlazaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5382BF438BFC9EF2D0400E19 /* SRPlazaCell.m */; };
+		1F00AA0011BB22CC33DD44EE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F00AA0011BB22CC33DD44EE /* SystemConfiguration.framework */; };
 		1FAD9EDE92BB7CE585909749 /* SREditStrategyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D7E0B6589F3B5E53F35F543 /* SREditStrategyViewController.m */; };
 		27C8DE6D653F62412813E1FB /* SRRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0EC52BD3D31CEB4D3910EEA /* SRRecordViewController.m */; };
 		35F7E0307F5780A531AE8304 /* SRStrategyDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0223BCEAFA92A224E2BCC929 /* SRStrategyDetailViewController.m */; };
-		A4F9D1C3E8B44710A12C3401 /* SRFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F9D1C3E8B44710A12C3403 /* SRFeedbackViewController.m */; };
+		58A02A4C2F53000400093F02 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58A02A4B2F53000400093F02 /* IOKit.framework */; };
 		5D46B8EFE45334518FF7C963 /* libPods-StratumRecord.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D921DC295D0A82E6E871E758 /* libPods-StratumRecord.a */; };
 		618BE970E22B0B7C653B94B3 /* SRSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8436008897285373AC19ECF6 /* SRSettingsViewController.m */; };
 		728EC68849C7E93EA228D06D /* SRTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B77C78182A1D0E24CE0AF68D /* SRTabBarController.m */; };
 		72AF8D9FF67A2345CE41CE21 /* SRPlazaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAECC9A1D54221A0D10FE8AD /* SRPlazaViewController.m */; };
 		830543E38C1A8AE4C95D377D /* SRComment.m in Sources */ = {isa = PBXBuildFile; fileRef = B876F9D27378FC0A29296563 /* SRComment.m */; };
+		A4F9D1C3E8B44710A12C3401 /* SRFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F9D1C3E8B44710A12C3403 /* SRFeedbackViewController.m */; };
 		CCFB3E219776F6DEA3B94F58 /* SRStrategyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FB873CDB9C6EC8A76D22922A /* SRStrategyCell.m */; };
 		DD835DCF6057A8FF2697D150 /* SRConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DE11CCEC875E3835FD2860 /* SRConstants.m */; };
 		FA4B694E61DB45EBC1320603 /* SRStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 827B1BDF55FF578EC0AA2DA5 /* SRStrategy.m */; };
@@ -27,15 +29,18 @@
 		0223BCEAFA92A224E2BCC929 /* SRStrategyDetailViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRStrategyDetailViewController.m; path = StratumRecord/SRStrategyDetailViewController.m; sourceTree = "<group>"; };
 		026AE3FE333CCA9BCAD4CC0F /* SRPlazaCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRPlazaCell.h; path = StratumRecord/SRPlazaCell.h; sourceTree = "<group>"; };
 		04C97FB22F4DE04900560F9E /* StratumRecord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StratumRecord.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A4F9D1C3E8B44710A12C3402 /* SRFeedbackViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRFeedbackViewController.h; path = StratumRecord/SRFeedbackViewController.h; sourceTree = "<group>"; };
-		A4F9D1C3E8B44710A12C3403 /* SRFeedbackViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRFeedbackViewController.m; path = StratumRecord/SRFeedbackViewController.m; sourceTree = "<group>"; };
 		2CF0C66A85E1D69271C76661 /* SRTabBarController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRTabBarController.h; path = StratumRecord/SRTabBarController.h; sourceTree = "<group>"; };
 		2D61084F5E1C402BC9D35B05 /* SRSettingsViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRSettingsViewController.h; path = StratumRecord/SRSettingsViewController.h; sourceTree = "<group>"; };
+		2F00AA0011BB22CC33DD44EE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		2F00AA1122BB33CC44DD55FF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		2F00AA2233BB44CC55DD66FF /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		2F00AA3344BB55CC66DD77FF /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		38C042F6AEADA02B2D603B1E /* SRStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRStrategy.h; path = StratumRecord/SRStrategy.h; sourceTree = "<group>"; };
 		3AAE6F273364E8C63BE1C784 /* SRRecordViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRRecordViewController.h; path = StratumRecord/SRRecordViewController.h; sourceTree = "<group>"; };
 		43EB8482415D9A5C91AA4A9A /* SREditStrategyViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SREditStrategyViewController.h; path = StratumRecord/SREditStrategyViewController.h; sourceTree = "<group>"; };
 		480E11642CA62765676A984E /* SRConstants.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRConstants.h; path = StratumRecord/SRConstants.h; sourceTree = "<group>"; };
 		5382BF438BFC9EF2D0400E19 /* SRPlazaCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRPlazaCell.m; path = StratumRecord/SRPlazaCell.m; sourceTree = "<group>"; };
+		58A02A4B2F53000400093F02 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		701994FA67EE2849FE2FD63B /* SRComment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRComment.h; path = StratumRecord/SRComment.h; sourceTree = "<group>"; };
 		827B1BDF55FF578EC0AA2DA5 /* SRStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRStrategy.m; path = StratumRecord/SRStrategy.m; sourceTree = "<group>"; };
 		82DE11CCEC875E3835FD2860 /* SRConstants.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRConstants.m; path = StratumRecord/SRConstants.m; sourceTree = "<group>"; };
@@ -43,6 +48,8 @@
 		8B16221692F4FBDE1D083B51 /* SRPlazaViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRPlazaViewController.h; path = StratumRecord/SRPlazaViewController.h; sourceTree = "<group>"; };
 		8D7E0B6589F3B5E53F35F543 /* SREditStrategyViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SREditStrategyViewController.m; path = StratumRecord/SREditStrategyViewController.m; sourceTree = "<group>"; };
 		A1A88C1B9989B60CDB66918F /* Pods-StratumRecord.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StratumRecord.debug.xcconfig"; path = "Target Support Files/Pods-StratumRecord/Pods-StratumRecord.debug.xcconfig"; sourceTree = "<group>"; };
+		A4F9D1C3E8B44710A12C3402 /* SRFeedbackViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRFeedbackViewController.h; path = StratumRecord/SRFeedbackViewController.h; sourceTree = "<group>"; };
+		A4F9D1C3E8B44710A12C3403 /* SRFeedbackViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRFeedbackViewController.m; path = StratumRecord/SRFeedbackViewController.m; sourceTree = "<group>"; };
 		AAECC9A1D54221A0D10FE8AD /* SRPlazaViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRPlazaViewController.m; path = StratumRecord/SRPlazaViewController.m; sourceTree = "<group>"; };
 		ABA9C8C0F972DE12FF8D74F1 /* SRStrategyCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SRStrategyCell.h; path = StratumRecord/SRStrategyCell.h; sourceTree = "<group>"; };
 		B77C78182A1D0E24CE0AF68D /* SRTabBarController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SRTabBarController.m; path = StratumRecord/SRTabBarController.m; sourceTree = "<group>"; };
@@ -82,7 +89,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58A02A4C2F53000400093F02 /* IOKit.framework in Frameworks */,
 				5D46B8EFE45334518FF7C963 /* libPods-StratumRecord.a in Frameworks */,
+				1F00AA0011BB22CC33DD44EE /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +106,7 @@
 				513A91779CD6735E8F97FB5C /* Pods */,
 				2CC4CCD3AE3C3D717CF33591 /* Frameworks */,
 				9CC66914477BB5D69BA83E83 /* StratumRecord */,
+				58A028F62F52F99000093F02 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,6 +121,7 @@
 		2CC4CCD3AE3C3D717CF33591 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				58A02A4B2F53000400093F02 /* IOKit.framework */,
 				D921DC295D0A82E6E871E758 /* libPods-StratumRecord.a */,
 			);
 			name = Frameworks;
@@ -123,6 +134,17 @@
 				DEA112453DA26785953F976C /* Pods-StratumRecord.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		58A028F62F52F99000093F02 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				2F00AA0011BB22CC33DD44EE /* SystemConfiguration.framework */,
+				2F00AA1122BB33CC44DD55FF /* Security.framework */,
+				2F00AA2233BB44CC55DD66FF /* libz.tbd */,
+				2F00AA3344BB55CC66DD77FF /* libc++.tbd */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		9CC66914477BB5D69BA83E83 /* StratumRecord */ = {
@@ -306,8 +328,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/StratumRecord",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StratumRecord/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need to obtain camera permissions to customize profile pictures";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -340,8 +367,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/StratumRecord",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StratumRecord/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need to obtain camera permissions to customize profile pictures";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

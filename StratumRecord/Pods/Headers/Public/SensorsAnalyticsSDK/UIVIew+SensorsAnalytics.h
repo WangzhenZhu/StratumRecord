@@ -1,0 +1,1 @@
+../../../SensorsAnalyticsSDK/SensorsAnalyticsSDK/UIRelated/UIVIew+SensorsAnalytics.h

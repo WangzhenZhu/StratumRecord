@@ -16,6 +16,7 @@
         _commentCount = 0;
         _isLiked = NO;
         _isPublished = NO;
+        _isUnderReview = NO;
     }
     return self;
 }
@@ -35,6 +36,7 @@
         _commentCount = [dict[@"commentCount"] integerValue];
         _isLiked = [dict[@"isLiked"] boolValue];
         _isPublished = [dict[@"isPublished"] boolValue];
+        _isUnderReview = [dict[@"isUnderReview"] boolValue];
     }
     return self;
 }
@@ -53,7 +55,8 @@
         @"likeCount": @(self.likeCount),
         @"commentCount": @(self.commentCount),
         @"isLiked": @(self.isLiked),
-        @"isPublished": @(self.isPublished)
+        @"isPublished": @(self.isPublished),
+        @"isUnderReview": @(self.isUnderReview)
     };
 }
 
@@ -73,6 +76,7 @@
     [coder encodeInteger:self.commentCount forKey:@"commentCount"];
     [coder encodeBool:self.isLiked forKey:@"isLiked"];
     [coder encodeBool:self.isPublished forKey:@"isPublished"];
+    [coder encodeBool:self.isUnderReview forKey:@"isUnderReview"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -90,6 +94,7 @@
         _commentCount = [coder decodeIntegerForKey:@"commentCount"];
         _isLiked = [coder decodeBoolForKey:@"isLiked"];
         _isPublished = [coder decodeBoolForKey:@"isPublished"];
+        _isUnderReview = [coder decodeBoolForKey:@"isUnderReview"];
     }
     return self;
 }

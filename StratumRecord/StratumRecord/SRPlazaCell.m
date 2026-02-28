@@ -30,7 +30,7 @@
 @property (nonatomic, copy) void(^likeHandler)(void);
 @property (nonatomic, copy) void(^commentHandler)(void);
 @property (nonatomic, copy) void(^shareHandler)(void);
-@property (nonatomic, copy) void(^moreHandler)(void);
+@property (nonatomic, copy) void(^moreHandler)(UIButton *button);
 
 @end
 
@@ -234,7 +234,7 @@
                       likeHandler:(void(^)(void))likeHandler
                    commentHandler:(void(^)(void))commentHandler
                      shareHandler:(void(^)(void))shareHandler
-                      moreHandler:(void(^)(void))moreHandler {
+                      moreHandler:(void(^)(UIButton *button))moreHandler {
     
     self.likeHandler = likeHandler;
     self.commentHandler = commentHandler;
@@ -266,7 +266,7 @@
     self.contentLabel.text = strategy.content;
     
     // Actions
-    NSString *likeIconName = strategy.isLiked ? @"like_icon" : @"like_s_icon";
+    NSString *likeIconName = strategy.isLiked ? @"like_s_icon" : @"like_icon";
     [self.likeButton setImage:[UIImage imageNamed:likeIconName] forState:UIControlStateNormal];
     [self.likeButton setTitle:[NSString stringWithFormat:@"%ld", (long)strategy.likeCount] forState:UIControlStateNormal];
     self.likeButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 8);
@@ -301,7 +301,7 @@
 
 - (void)moreTapped {
     if (self.moreHandler) {
-        self.moreHandler();
+        self.moreHandler(self.moreButton);
     }
 }
 

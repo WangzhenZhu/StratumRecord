@@ -9,6 +9,7 @@
 #import "SRConstants.h"
 #import "SRDataManager.h"
 #import "SRStrategy.h"
+#import "SRAnalyticsManager.h"
 #import <Masonry/Masonry.h>
 
 @interface SRRecordViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -47,6 +48,17 @@
     [super viewWillAppear:animated];
     [self srm_loadData];
     self.navigationController.navigationBar.hidden = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    // 神策页面埋点
+    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"Record_Page"];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[SRAnalyticsManager sharedManager] trackPageViewEnd:@"Record_Page"];
 }
 
 - (void)srm_setupUI {

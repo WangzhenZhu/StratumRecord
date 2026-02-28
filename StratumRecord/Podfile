@@ -6,6 +6,7 @@ target 'StratumRecord' do
    pod 'Masonry', '~> 1.1.0'
    pod 'AFNetworking', '~> 4.0'
    pod 'LEEAlert'
+   pod 'SensorsAnalyticsSDK', '~> 4.5.0'
   # Pods for StratumRecord
   
   # Example pods (uncomment to use):

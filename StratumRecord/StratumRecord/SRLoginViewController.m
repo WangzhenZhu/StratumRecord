@@ -6,6 +6,7 @@
 #import "SRLoginViewController.h"
 #import "SRUserManager.h"
 #import "SRConstants.h"
+#import "SRAnalyticsManager.h"
 #import <LEEAlert/LEEAlert.h>
 #import <Masonry/Masonry.h>
 
@@ -61,6 +62,16 @@ static NSString * const kSRSkipLoginOnceKey = @"SR_SKIP_LOGIN_ONCE";
     }];
     
     [self srm_setupUI];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"Login_Page"];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[SRAnalyticsManager sharedManager] trackPageViewEnd:@"Login_Page"];
 }
 
 - (void)srm_setupUI {

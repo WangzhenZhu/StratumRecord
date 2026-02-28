@@ -13,7 +13,11 @@
 @property (nonatomic, copy) NSString *email;
 @property (nonatomic, copy) NSString *username;
 @property (nonatomic, copy) NSString *avatarEmoji;
+@property (nonatomic, copy) NSString *avatarImageBase64;
+@property (nonatomic, copy) NSString *bio;
 @property (nonatomic, assign) NSInteger level;
+@property (nonatomic, assign) NSInteger currentExp;
+@property (nonatomic, assign) NSInteger maxExp;
 
 // Stats
 @property (nonatomic, assign) NSInteger strategiesCount;

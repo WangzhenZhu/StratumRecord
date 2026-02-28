@@ -1,0 +1,1 @@
+../../../SensorsAnalyticsSDK/SensorsAnalyticsSDK/Core/Interceptor/Flush/SAFlushJSONInterceptor.h

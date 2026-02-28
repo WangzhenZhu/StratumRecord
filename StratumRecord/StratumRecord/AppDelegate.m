@@ -6,6 +6,7 @@
 //
 
 #import "AppDelegate.h"
+#import "SRAnalyticsManager.h"
 
 @interface AppDelegate ()
 
@@ -16,6 +17,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    // 初始化神策分析 SDK
+    // 注意: 请将下面的 URL 替换为你的神策数据接收地址
+    [[SRAnalyticsManager sharedManager] setupWithServerURL:@"https://your-sensors-data-url.com/sa?project=default"];
+    
     return YES;
 }
 

@@ -1,0 +1,1 @@
+../../../SensorsAnalyticsSDK/SensorsAnalyticsSDK/Core/Interceptor/EventBuild/SAEventResultInterceptor.h

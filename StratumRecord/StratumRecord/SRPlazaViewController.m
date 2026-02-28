@@ -7,9 +7,12 @@
 #import "SRPlazaCell.h"
 #import "SRStrategyDetailViewController.h"
 #import "SREditStrategyViewController.h"
+#import "SRReportViewController.h"
 #import "SRConstants.h"
 #import "SRDataManager.h"
 #import "SRStrategy.h"
+#import "SRUserManager.h"
+#import "SRAnalyticsManager.h"
 #import <Masonry/Masonry.h>
 
 @interface SRPlazaViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -48,6 +51,17 @@
     [super viewWillAppear:animated];
     [self srm_loadData];
     self.navigationController.navigationBar.hidden = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    // 神策页面埋点
+    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"Plaza_Page"];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[SRAnalyticsManager sharedManager] trackPageViewEnd:@"Plaza_Page"];
 }
 
 - (void)srm_setupUI {
@@ -161,8 +175,8 @@
                   shareHandler:^{
         [weakSelf srm_handleShareForStrategy:strategy];
     }
-                   moreHandler:^{
-        [weakSelf srm_showMoreOptionsForStrategy:strategy];
+                   moreHandler:^(UIButton *button) {
+        [weakSelf srm_showMoreOptionsForStrategy:strategy fromButton:button];
     }];
     
     return cell;
@@ -189,6 +203,14 @@
     strategy.isLiked = !strategy.isLiked;
     strategy.likeCount += strategy.isLiked ? 1 : -1;
     [[SRDataManager sharedManager] srm_updatePlazaStrategy:strategy];
+    
+    // Update user's total likes count
+    SRUser *currentUser = [[SRUserManager sharedManager] currentUser];
+    if (currentUser) {
+        currentUser.likesCount += strategy.isLiked ? 1 : -1;
+        [[SRUserManager sharedManager] saveCurrentUser];
+    }
+    
     [self.tableView reloadData];
 }
 
@@ -238,7 +260,7 @@
     [self presentViewController:confirmAlert animated:YES completion:nil];
 }
 
-- (void)srm_showMoreOptionsForStrategy:(SRStrategy *)strategy {
+- (void)srm_showMoreOptionsForStrategy:(SRStrategy *)strategy fromButton:(UIButton *)button {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
@@ -249,42 +271,43 @@
         [self srm_reportStrategy:strategy];
     }]];
     
-    [alert addAction:[UIAlertAction actionWithTitle:@"Block User"
+    [alert addAction:[UIAlertAction actionWithTitle:@"Hide Strategy"
                                              style:UIAlertActionStyleDestructive
                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self srm_blockUser:strategy.authorName];
+        [self srm_hideStrategy:strategy];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     
     if (alert.popoverPresentationController) {
-        alert.popoverPresentationController.sourceView = self.view;
-        alert.popoverPresentationController.sourceRect = CGRectMake(self.view.bounds.size.width / 2, 
-                                                                    self.view.bounds.size.height / 2, 
-                                                                    1, 1);
+        alert.popoverPresentationController.sourceView = button;
+        alert.popoverPresentationController.sourceRect = button.bounds;
+        alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
     }
     
     [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)srm_reportStrategy:(SRStrategy *)strategy {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Report Submitted"
-                                                                   message:@"Thank you for your report. We will review this strategy."
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
+    SRReportViewController *reportVC = [[SRReportViewController alloc] initWithStrategy:strategy];
+    [self.navigationController pushViewController:reportVC animated:YES];
 }
 
-- (void)srm_blockUser:(NSString *)userName {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"User Blocked"
-                                                                   message:[NSString stringWithFormat:@"You will no longer see posts from %@", userName]
+- (void)srm_hideStrategy:(SRStrategy *)strategy {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Strategy Hidden"
+                                                                   message:@"This strategy has been hidden from your feed."
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        // 从列表中移除该策略
+        [self.strategies removeObject:strategy];
+        [self.tableView reloadData];
+    }]];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)srm_showStrategyDetail:(SRStrategy *)strategy {
     SRStrategyDetailViewController *detailVC = [[SRStrategyDetailViewController alloc] initWithStrategy:strategy];
+    detailVC.hidesBottomBarWhenPushed = true;
     [self.navigationController pushViewController:detailVC animated:YES];
 }
 

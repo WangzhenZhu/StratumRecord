@@ -18,23 +18,40 @@ PODS:
     - LEEAlert/Privacy (= 1.8.0)
   - LEEAlert/Privacy (1.8.0)
   - Masonry (1.1.0)
+  - SensorsAnalyticsSDK (4.5.23):
+    - SensorsAnalyticsSDK/Core (= 4.5.23)
+  - SensorsAnalyticsSDK/__Store (4.5.23)
+  - SensorsAnalyticsSDK/AutoTrack (4.5.23):
+    - SensorsAnalyticsSDK/Common
+  - SensorsAnalyticsSDK/Base (4.5.23):
+    - SensorsAnalyticsSDK/__Store
+  - SensorsAnalyticsSDK/Common (4.5.23):
+    - SensorsAnalyticsSDK/Base
+  - SensorsAnalyticsSDK/Core (4.5.23):
+    - SensorsAnalyticsSDK/Common
+    - SensorsAnalyticsSDK/Visualized
+  - SensorsAnalyticsSDK/Visualized (4.5.23):
+    - SensorsAnalyticsSDK/AutoTrack
 
 DEPENDENCIES:
   - AFNetworking (~> 4.0)
   - LEEAlert
   - Masonry (~> 1.1.0)
+  - SensorsAnalyticsSDK (~> 4.5.0)
 
 SPEC REPOS:
   trunk:
     - AFNetworking
     - LEEAlert
     - Masonry
+    - SensorsAnalyticsSDK
 
 SPEC CHECKSUMS:
   AFNetworking: 3bd23d814e976cd148d7d44c3ab78017b744cd58
   LEEAlert: 20b46f143287d749ec3e718059e064c175932807
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  SensorsAnalyticsSDK: c5ecb1eb34777fef51cf896e82231cfbd0b4a79b
 
-PODFILE CHECKSUM: a0ccd65e382e1766b151974025b9012e598f8e3b
+PODFILE CHECKSUM: dc5e99d83e29efd70d098bd1bd829e9b567c999a
 
 COCOAPODS: 1.16.2

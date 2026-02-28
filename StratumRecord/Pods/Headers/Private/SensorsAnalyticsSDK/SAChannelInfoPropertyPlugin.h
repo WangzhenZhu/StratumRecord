@@ -1,0 +1,1 @@
+../../../SensorsAnalyticsSDK/SensorsAnalyticsSDK/ChannelMatch/SAChannelInfoPropertyPlugin.h

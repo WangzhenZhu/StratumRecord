@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger, SRImportanceLevel) {
 @property (nonatomic, assign) NSInteger commentCount;
 @property (nonatomic, assign) BOOL isLiked;
 @property (nonatomic, assign) BOOL isPublished; // Whether it's published to plaza
+@property (nonatomic, assign) BOOL isUnderReview; // Whether it's under review
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (NSDictionary *)toDictionary;
