@@ -56,7 +56,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     // 神策页面埋点
-    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"Plaza_Page"];
+//    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"Plaza_Page"];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {

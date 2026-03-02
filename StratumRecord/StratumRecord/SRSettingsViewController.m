@@ -87,7 +87,7 @@
     // 神策页面埋点
     [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"Settings_Page"];
     
-    // 设置用户属性
+   //  设置用户属性
     SRUser *user = [[SRUserManager sharedManager] currentUser];
     if (user) {
         [[SRAnalyticsManager sharedManager] login:user.userId];

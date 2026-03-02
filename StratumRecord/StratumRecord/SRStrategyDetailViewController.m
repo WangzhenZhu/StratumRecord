@@ -92,12 +92,12 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"StrategyDetail_Page"];
+//    [[SRAnalyticsManager sharedManager] trackPageViewBegin:@"StrategyDetail_Page"];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[SRAnalyticsManager sharedManager] trackPageViewEnd:@"StrategyDetail_Page"];
+//    [[SRAnalyticsManager sharedManager] trackPageViewEnd:@"StrategyDetail_Page"];
 }
 
 - (void)dealloc {

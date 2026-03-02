@@ -22,27 +22,31 @@
 - (void)setupWithServerURL:(NSString *)serverURL {
     SAConfigOptions *options = [[SAConfigOptions alloc] initWithServerURL:serverURL launchOptions:nil];
     
-    // 打开自动采集
-    options.autoTrackEventType = SensorsAnalyticsEventTypeAppStart |
-                                  SensorsAnalyticsEventTypeAppEnd |
-                                  SensorsAnalyticsEventTypeAppViewScreen |
-                                  SensorsAnalyticsEventTypeAppClick;
+    // 配置安全策略 - 允许所有证书（开发/测试环境使用）
+    // 生产环境建议使用 [SASecurityPolicy policyWithPinningMode:SASSLPinningModePublicKey]
+    SASecurityPolicy *securityPolicy = [SASecurityPolicy policyWithPinningMode:SASSLPinningModeNone];
+    securityPolicy.allowInvalidCertificates = YES; // 允许无效证书（仅开发/测试环境）
+    securityPolicy.validatesDomainName = NO; // 不验证域名（仅开发/测试环境）
+    options.securityPolicy = securityPolicy;
     
-    // 打开 Debug 模式（发布时需要关闭）
-    options.debugMode = SensorsAnalyticsDebugOff;
+//    // 打开自动采集
+//    options.autoTrackEventType = SensorsAnalyticsEventTypeAppStart |
+//                                  SensorsAnalyticsEventTypeAppEnd |
+//                                  SensorsAnalyticsEventTypeAppViewScreen |
+//                                  SensorsAnalyticsEventTypeAppClick;
     
     // 开启日志
-    options.enableLog = YES;
+    options.enableLog = false;
     
     // 初始化 SDK
     [SensorsAnalyticsSDK startWithConfigOptions:options];
     
-    NSLog(@"✅ 神策分析 SDK 初始化成功");
+    NSLog(@"✅ 神策分析 SDK 初始化成功（已配置宽松的SSL策略）");
 }
 
 - (void)trackPageViewBegin:(NSString *)pageName {
-    [[SensorsAnalyticsSDK sharedInstance] trackViewScreen:pageName properties:@{
-        @"page_start": @YES
+    [[SensorsAnalyticsSDK sharedInstance] track:@"PageViewBegin" withProperties:@{
+        @"page_name": pageName
     }];
     NSLog(@"📊 神策页面埋点: %@ (开始)", pageName);
 }
